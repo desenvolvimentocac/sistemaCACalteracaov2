@@ -1,0 +1,18 @@
+{
+  "dir": "ltr",
+  "lang": "pt-BR",
+  "name": "Sistema do CAC \n UFRRJ",
+  "description": "Sistema de gerenciamento e matricula do Centro de Arte e Cultura da Universidade Federal Rural do Rio de Janeiro",
+  "author": "Vinícius Martins e Filipe Klinger",
+  "short_name": "CAC UFRRJ",
+  "icons": [{
+    "src": "img/cac2.png",
+    "sizes": "512x512 192x192 144x144 128x128 64x64"
+  }],
+  "scope": "/dac/",
+  "start_url": "/dac/index.php?pag=Login",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#000",
+  "background_color": "#000"
+}

@@ -1,0 +1,66 @@
+<body>
+
+<div class=" infra">
+    <div class="header">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid" style="overflow-x: hidden">
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="index.php?pag=Infraestrutura"><i class="glyphicon glyphicon-chevron-left"></i> Voltar a Gerência de Infraestrutura</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="container" style="overflow-x: hidden">
+        <form id="editSala" class="form-horizontal" action="" method="POST">
+
+            <div class="form-group">
+                <h2 class="" style="">Edição de Salas - <span id="nomeHeader"></span></h2>
+                <br><br>
+                <label class="control-label" for="nome">NOME DE SALA </label>
+                <div class="">
+                    <input id="nome" name="nome" type="text" placeholder="Ex. Sala de desenho"  class="form-control input-md" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label" >ESTADO DE ATIVIDADE</label>
+                <div class="">
+                    <label class="radio-inline">
+                        <input id="ativo" type="radio" name="ativo" value="1" >Ativo
+                    </label>
+                    <label class="radio-inline">
+                        <input id="inativo" type="radio" name="ativo" value="0" >Inativo
+                    </label>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="form-group"><!-- Submit -->
+                <input id="enviar" type="submit" class="btn btn-primary btn-block" value="Atualizar" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    var controlador = 'control/main.php?req=selectSalaById&id='+getParameterByName('id');
+
+    $('#tbody').on("load", loader());
+
+    function loader() {
+        getMsgs();
+        ajaxLoadGET(controlador,jsonParseEditSala,'#carregador');
+        $('#editSala').attr('action', 'control/main.php?req=updateSala&id='+getParameterByName('id'));
+    }
+
+    function jsonParseEditSala(resposta,corpo) {
+        var jsonObj = JSON.parse(resposta);
+        $('#nome').val(jsonObj[0].nome);
+        $('#nomeHeader').append(jsonObj[0].nome);
+    }
+</script>
+</body>

@@ -1,0 +1,80 @@
+<body class="container-fluid infra">
+<div class="header">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="fa fa-bars fa-lg"></span>
+                </button>
+
+                <a class="navbar-brand" href="?pag=DashBoard" style="color: white"><i class="fa fa-chevron-left"></i> Página Inicial</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active" data-target="#myNavbar"><a data-toggle="tab" href="#predios">Gerenciar Prédios</a></li>
+                    <li data-target="#myNavbar"><a data-toggle="tab" onclick="ajaxLoadGET('control/main.php?req=selectSala',jsonParseSalas,'#tsala');" href="#salas">Gerenciar Salas</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<p id="avisos"></p>
+
+<div style="overflow-x: hidden;">
+    <div id="contTab" class="tab-content">
+        <div id="predios" class="tab-pane fade in active">
+
+            <a href="?pag=Cad.Predio" type="button" class="btn btn-primary"><i
+                    class="glyphicon glyphicon-plus"></i> Novo Prédio</a>
+
+            <table class="table tableContainer">
+                <thead>
+                <tr>
+                    <th class=''>Nome</th>
+                    <th class=''>Localização</th>
+                    <th class=''>Ativo</th>
+                    <th class=''></th>
+                </tr>
+                </thead>
+                <tbody id="tpredio"></tbody>
+            </table>
+        </div>
+
+        <div id="salas" class="tab-pane fade">
+            <a href="?pag=Cad.Sala" type="button" class="btn btn-primary"><i
+                    class="glyphicon glyphicon-plus"></i> Nova Sala</a>
+            <br>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th class=''>Nome</th>
+                    <th class=''>Prédio</th>
+                    <th class=''>Ativo</th>
+                    <th class=''></th>
+                </tr>
+                </thead>
+                <tbody id="tsala"></tbody>
+            </table>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var controlador = "control/main.php?req=selectPredio";
+
+    $('#tbody').on("load", loader());
+
+
+    function loader() {
+        getMsgs();
+        ajaxLoadGET(controlador, jsonParsePredios, '#tpredio')
+    }
+
+</script>
+</body>

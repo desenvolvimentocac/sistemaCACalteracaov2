@@ -1,0 +1,152 @@
+<body class="container-fluid aluno">
+<div class="header">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand" href="?pag=DashBoard" style="color: white"><i class="glyphicon glyphicon-chevron-left"></i> Página Inicial</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active" data-toggle="collapse" data-target="#myNavbar"><a data-toggle="" href="#">Gerenciar Alunos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<p id="avisos"></p>
+<div style="overflow-x: hidden;">
+    <div id="contTab" class="tab-content">
+        <div id="" class="tab-pane fade in active">
+            <select class="selectCool2" onchange="obterAlunos();" id="turma">
+                <option value="1" selected="selected">T01</option>
+            </select>
+            <a id="gerarPresenca" href="" class="btn btn-primary">Gerar Lista de presença</a>
+            <h3 class="text-center">Alunos Matriculados na turma</h3>
+
+            <div style="overflow-x: auto">
+
+                <table class="table" style="min-width: 400px;">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nome</th>
+                        <th>Idade</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="alunos">
+                    </tbody>
+                </table>
+
+            </div>
+            <h3 class="text-center">Alunos Na lista de Espera</h3>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Posição</th>
+                    <th>Nome</th>
+                    <th>Idade</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="listaEspera">
+                </tbody>
+            </table>
+
+            <h3 class="text-center">Alunos com Matricula Trancada</h3>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Nome</th>
+                    <th>Idade</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="matTrancada">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(loader());
+    function loader() {
+        ajaxLoadGET('control/main.php?req=selectTurmaAtiva', parseTurmasAtivas, '#turma');
+        getMsgs();
+    }
+
+    function parseAlunos(resposta, corpo) {
+        let objJson = JSON.parse(resposta);
+        let listaAlunos = '';
+        let listaEspera = '';
+        let objEspera = [];
+        let listaTrancados = '';
+        let num = 0;
+        for (let i in objJson) {
+
+            if (objJson[i].trancado === '0' && objJson[i].lista_espera === '0') {
+                num++;
+                listaAlunos +=
+                    '<tr>\n' +
+                    '     <td>'+num+' </td>\n' +
+                    '     <td style="text-transform: capitalize;">' + objJson[i].nome + " " + objJson[i].sobrenome + '</td>\n' +
+                    '     <td>' + calculaIdade(objJson[i].data_nascimento) + ' anos</a></td>\n' +
+                    '     <td></td>\n' +
+                    '</tr>';
+            } else if (objJson[i].trancado === '1') {
+                listaTrancados +=
+                    '<tr>\n' +
+                    '     <td> </td>\n' +
+                    '     <td style="text-transform: capitalize;">' + objJson[i].nome + " " + objJson[i].sobrenome + '</td>\n' +
+                    '     <td>' + calculaIdade(objJson[i].data_nascimento) + ' anos</a></td>\n' +
+                    '     <td>Matricula Trancada</a></td>\n' +
+                    '     <td> </td>\n' +
+                    '</tr>';
+            } else {
+                objEspera.push(objJson[i]);
+            }
+        }
+
+        //Ordenando por chegada
+        objEspera.sort(function (a, b) {
+            return a.id_aluno - b.id_aluno;
+        });
+        // agora inserindo os alunos da espera
+        for (let j in objEspera) {
+            listaEspera +=
+                '<tr>\n' +
+                '     <td>' + (parseInt(j) + 1) + '</td>\n' +
+                '     <td style="text-transform: capitalize;">' + objEspera[j].nome + " " + objEspera[j].sobrenome + '</td>\n' +
+                '     <td>' + calculaIdade(objJson[j].data_nascimento) + ' anos</td>\n' +
+                '     <td></td>\n' +
+                '</tr>';
+        }
+
+        let listaVazia =
+            '<tr>\n' +
+            '                    <td></td>\n' +
+            '                    <td  style="font-size: x-large; font-weight: bold"><span class="fa fa-frown-o"></span> NÃO EXISTEM ALUNOS NESTA CATEGORIA</td>\n' +
+            '                    <td></td>\n' +
+            '                    <td></td>\n' +
+            '                </tr>';
+        if (listaAlunos.length < 2) listaAlunos = listaVazia;
+        if (listaEspera.length < 2) listaEspera = listaVazia;
+        if (listaTrancados.length < 2) listaTrancados = listaVazia;
+        corpo.append(listaAlunos);
+        $('#listaEspera').empty().append(listaEspera);
+        $('#matTrancada').empty().append(listaTrancados);
+    }
+</script>
+</body>

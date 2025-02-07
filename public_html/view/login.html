@@ -1,0 +1,84 @@
+<body>
+<div id="main">
+    <div class="container">
+        <div class="col-lg-6 logo">
+        </div>
+        <div class="col-lg-6" id="mainFormContainer" style="margin-bottom: 25px">
+            <div class="panel-body">
+
+                <form id="form" action="control/main.php?req=login" method="POST" autocomplete="off">
+                    <div id="mainAvisos">
+                        <p id="avisos" class=""></p>
+                    </div>
+                    <input id="user" type="text" name="login" class="form-control" placeholder="Usuário">
+                    <br>
+                    <input type="password" class="form-control" name="senha" placeholder="Senha">
+                    <br>
+                    <button type="submit" href="#" class="btn btn-sec"> Entrar</button>
+                    <a href="index.php?pag=Cad.Candidato">Não Tenho Conta</a>
+                </form>
+            </div>
+        </div>
+        <div class="row text-center">
+            <br/>
+            <button onclick="slideTo('titulo-lista')" class="coolButton2" id="bt-atividade-disp">s Disponíveis </button>
+            &nbsp;&nbsp;&nbsp;
+            <button onclick="slideTo('MainFooter')" class="coolButton2" > Contato </button>
+        </div>
+        <br>
+    </div>
+</div>
+
+<h2 id="titulo-lista" class="text-center">
+    <span class="atividade-name"></span> Disponíveis em
+    <span id="anoAtual" style="color: white"></span>.<span id="periodoAtual" style="color: white"></span>
+</h2>
+
+<div id="listaOficinas" class="lista" style="margin-top: 0">
+
+    <div class="container-fluid">
+
+        <br/>
+
+        <div id="t_oficinas"></div>
+
+    </div>
+
+</div>
+<div id="MainFooter" class="text-left">
+    <br>
+    <div class="container">
+        <div class="col-md-6">
+            <span> Telefone: +55 (21) 2682-2447</span><br>
+            <span> Endereço: BR 465, km 7, 2007 (Antiga Estrada Rio São-Paulo) - Seropédica/RJ</span><br><br>
+            <span>&copy; CAC CENTRO DE ARTE E CULTURA | TODOS OS DIREITOS RESERVADOS</span>
+        </div>
+        <div class="col-md-6 text-right">
+
+            <div class="" id="contatos">
+                <a href="https://www.facebook.com/cac.rural"><span class="fa fa-facebook-official"></span></a>
+            </div>
+            <small>Projetado por <a href="http://filipeklinger.16mb.com/">Filipe Klinger</a>, Luciano Viana, e
+                <a href="http://bit.do/eo8WB">Vinícius Martins</a>
+            </small>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+    $(document).ready(loadLogin());
+
+    function loadLogin() {
+        $('.atividade-name').append(AtividadeName+'s');
+        $('#bt-atividade-disp').prepend(AtividadeName);
+        getMsgs();
+        ajaxLoadGET('control/main.php?req=selectPeriodoAtual', parsePeriodoText, '#periodoAtual');
+        ajaxLoadGET('control/main.php?req=selectTurmaAtiva', listaMarota, '#t_oficinas');
+    }
+
+    if(($(window).height() < 640) && ($(window).width() < 539)){
+        //$div.text($div.text().replace('Disponíveis',''));
+        $('#bt-atividade-disp').text($('#bt-atividade-disp').text().replace('Disponíveis',''));
+    }
+
+</script>
+</body>

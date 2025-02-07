@@ -1,0 +1,143 @@
+<body id="dashboard" style="overflow: hidden">
+<!-- Sidebar Holder -->
+<div class="sidebar col-md-1">
+    <br>
+    <button class="btn btn-info closeBtnAtSmallScreen" onclick="btnTglr()">X</button>
+    <ul class="list-unstyled" id="menu">
+        <li class="text-center">
+            <a href="control/main.php?req=logout">
+                <i class="glyphicon glyphicon-log-out"></i>
+                <br>Sair
+            </a>
+        </li>
+    </ul>
+</div>
+<!-- Page Content Holder -->
+<div class="content container-fluid" style="overflow: auto">
+    <p id="avisos"></p>
+    <div class="row">
+        <p id="usr">
+            Seja bem vindo <span id="user"></span>. <br> Você tem autoridade de <b><span id="nv"></span></b>.
+        </p>
+    </div>
+    <hr>
+    <br>
+    <button class="btn btn-primary" onclick="btnTglr()">Menu</button>
+    <h2><b>Minhas oficinas em <span id="anoAtual"></span>.<span id="periodoAtual"></span></b></h2>
+    <br>
+    <div class="tableContainer">
+        <table class="table">
+            <thead>
+            <tr>
+                <th class='col-md-2' id="atividade-header-table"></th>
+                <th class='col-md-2'>Turma</th>
+                <th class='col-md-2'>Dia da Semana</th>
+                <th class='col-md-2'>Horário</th>
+                <th class='col-md-1'>Sala</th>
+                <th class='col-md-2'>Professor</th>
+            </tr>
+            </thead>
+            <tbody id="t_oficinas"></tbody>
+        </table>
+    </div>
+    <div id="dependente">
+
+
+    </div>
+
+</div>
+<script type="text/javascript">
+
+    $(document).ready(loader());
+
+    function btnTglr() {
+        $('.sidebar').toggle(100);
+        if(($(window).height() < 640) && ($(window).width() < 539)){
+            $('.content').toggle(100);
+            $('.collapse').collapse('hide');
+        }
+    }
+
+    function loader() {
+        $('#atividade-header-table').prepend(AtividadeName);
+        $('#prof-header-table').empty().prepend(CargoProf);
+        ajaxLoadGET('control/main.php?req=selecUsuarioLogado', parseUsuario, '#nv');
+        carregaTurmas();
+        ajaxLoadGET('control/main.php?req=selectPeriodoAtual', parsePeriodoText, '#periodoAtual');
+        getMsgs();
+        getMenu();
+        //btnTglr();
+    }
+
+    function carregaTurmas(){
+        ajaxLoadGET('control/main.php?req=minhasOficinas', parseTurmas, '#t_oficinas');
+        function parseTurmas(resposta,corpo) {
+            var objJson = JSON.parse(resposta);
+            //inserindo oficinas do responsavel
+            let obj = objJson[0].oficinas;
+            if(objJson.length > 0){
+                addOficinas(obj,corpo);
+            }
+            //aqui verificamos dependentes
+            let dep = $('#dependente');
+            if(objJson.length > 1){
+                for(let j=1;j < objJson.length;j++){
+                    dep.append(`<h2>Oficinas de ${objJson[j].nome} ${objJson[j].sobrenome}</h2>`);
+                    dep.append(
+                        '<div class="tableContainer">\n' +
+                        '            <table class="table">\n' +
+                        '                <thead>\n' +
+                        '                <tr>\n' +
+                        '                    <th class=\'col-md-2 atividade-header-table\'></th>\n' +
+                        '                    <th class=\'col-md-2\'>Turma</th>\n' +
+                        '                    <th class=\'col-md-2\'>Dia da Semana</th>\n' +
+                        '                    <th class=\'col-md-2\'>Horário</th>\n' +
+                        '                    <th class=\'col-md-1\'>Sala</th>\n' +
+                        '                    <th class=\'col-md-2 prof-header-table\'>Professor</th>\n' +
+                        '                </tr>\n' +
+                        '                </thead>\n' +
+                        `                <tbody id="dept${j}"></tbody>\n` +
+                        '            </table>\n' +
+                        '        </div>'
+                    );
+                    let dependente ="#dept"+j;
+                addOficinas(objJson[j].oficinas,$(dependente));
+                }
+
+
+            }
+        }
+        function addOficinas(obj,corpo) {
+            for(i=0;i < obj.length;i++){
+                $(corpo).append(
+                    '<tr>\n' +
+                    `   <td class=\'col-md-2 atividade-header-table\'>${obj[i].oficina}</td>\n` +
+                    `   <td class=\'col-md-2\'>${obj[i].turma}</td>\n` +
+                    `   <td class=\'col-md-2\'>${getDiaSemana(obj[i])}</td>\n` +
+                    `   <td class=\'col-md-2\'>${obj[i].inicio} às ${obj[i].fim}</td>\n` +
+                    `   <td class=\'col-md-1\'>${obj[i].sala}</td>\n` +
+                    `   <td class=\'col-md-2 prof-header-table\'>${obj[i].professor}</td>\n` +
+                    '</tr>'
+                );
+            }
+            if(obj.length === 0){
+                $(corpo).append(
+                    '<tr>\n' +
+                    `   <td class=\'col-md-2 atividade-header-table\'>Nenhuma oficina</td>\n` +
+                    `   <td class=\'col-md-2\'> </td>\n` +
+                    `   <td class=\'col-md-2\'> </td>\n` +
+                    `   <td class=\'col-md-2\'> </td>\n` +
+                    `   <td class=\'col-md-1\'> </td>\n` +
+                    `   <td class=\'col-md-2 prof-header-table\'> </td>\n` +
+                    '</tr>'
+                );
+            }
+        }
+    }
+
+    // OnClick close submenu
+    $('.submenu').click( function(e) {
+        $('.collapse').collapse('hide');
+    });
+</script>
+</body>

@@ -1,0 +1,333 @@
+<body class="container-fluid usuario">
+
+<div class="header">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div>
+                <ul class="nav navbar-nav">
+                    <li><a href="index.php?pag=Login"><i class="glyphicon glyphicon-chevron-left"></i> Voltar para Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<p id="avisos"></p>
+<div class="container">
+    <!-- Form Name  -->
+    <form class="form-horizontal" action="control/main.php?req=insertPessoa" method="POST">
+
+        <div class="col-md-12">
+            <h4 class="text-left col-md-12 alert alert-info"><span class="glyphicon glyphicon-info-sign"
+                                                                   style="float: left;"></span><span
+                    class="col-md-8">Caso já possua cadastro e deseje inserir mais dependentes, cadastre os mesmos
+                através de sua conta na opção "adicionar dependente" </span></h4>
+        </div>
+
+        <div class="formBoxContainer col-md-12">
+            <h3 class="text-center col-md-12">Dados Pessoais <span class="responsavel_label" hidden> - Responsável</span>
+            </h3>
+
+            <div class="form-group col-md-12 col-lg-push-2">
+                <!-- Menor de idade ? -->
+                <div class="checkbox col-md-3" style="padding: 16px;">
+                    <label>
+                        <input id="is_menor" name="menor" type="checkbox"> Menor de 17 ?
+                    </label>
+                </div>
+                <!-- Ruralino -->
+                <div class="checkbox col-md-3" style="padding: 16px;">
+                    <label>
+                        <input id="is_ruralino" name="ruralino" type="checkbox"> Aluno da UFRuralRJ ?
+                    </label>
+                </div>
+            </div>
+            <!-- Primeiro nome da pessoa -->
+            <div class="form-group col-md-8 col-lg-push-2">
+                <label class="control-label" for="nome" id="label_nome">Nome <span class="responsavel_label" hidden>do responsável</span></label>
+                <div class="">
+                    <input autocomplete="false" id="nome" name="nome" type="text" placeholder="Ex. José" class="form-control input-md"
+                           required>
+                </div>
+            </div>
+
+            <!-- Sobrenome da pessoa -->
+            <div class="form-group col-md-8 col-lg-push-2">
+                <label class="control-label" for="sobrenome">Sobrenome  <span class="responsavel_label" hidden>do responsável</span></label>
+                <div class="">
+                    <input autocomplete="false" id="sobrenome" name="sobrenome" type="text" placeholder="Ex. da silva"
+                           class="form-control input-md" required="">
+                </div>
+            </div>
+
+            <!-- Nascimento -->
+            <div class="form-group col-md-8 col-lg-push-2">
+                <label class="control-label" for="nascimento">Data de Nascimento  <span class="responsavel_label" hidden>do responsável</span></label>
+                <div class="">
+                    <input autocomplete="false" id="nascimento" name="nascimento" type="date" min="1920-01-01" placeholder="  /  /    "
+                           class="form-control input-md" required="">
+                </div>
+            </div>
+
+            <!-- Telefone responsavel -->
+            <div class="form-group col-md-8 col-lg-push-2">
+                <label class="control-label" for="resp_tel">Telefone de Contato</label>
+                <div class="input-group">
+                        <div class="input-group-addon">
+                            <select class="selectCool" id="resp_tel_type" name="resp_tel_type" required="required">
+                                <option disabled selected>Tipo de Contato</option>
+                                <option value="1">Celular</option>
+                                <option value="2">Whatsapp</option>
+                                <option value="3">Fixo ( Residencial )</option>
+                                <option value="4">Para Recados</option>
+                            </select>
+                        </div>
+                    <input autocomplete="false" id="resp_tel" name="resp_tel" type="number" placeholder="somente números"
+                           class="form-control input-md" maxlength="11" minlength="10" required>
+                </div>
+            </div>
+
+            <!-- E-Mail -->
+            <div class="form-group col-md-8 col-lg-push-2">
+                <label class="control-label" for="email">E-Mail (Opcional)</label>
+                <div class="">
+                    <input autocomplete="false" id="email" name="email" type="email" placeholder="fulano@exemplo.com"
+                           class="form-control input-md">
+                </div>
+            </div>
+
+            <!-- Documento -->
+            <div class="form-group col-md-8 col-lg-push-2">
+                <label class="control-label" for="doc_number">Número de Documento  <span class="responsavel_label" hidden>do responsável</span></label>
+                <div class="input-group">
+                        <div class="input-group-addon">
+                            <select class="selectCool" id="doc_type" name="doc_type">
+                                <option disabled selected>Tipo de Documento</option>
+                                <option value="1">Registro Geral ( RG )</option>
+                                <option value="2">Passaport</option>
+                            </select>
+                        </div>
+                    <input autocomplete="false" id="doc_number" name="doc_number" type="number" placeholder="somente numeros"
+                           class="form-control input-md" required maxlength="11">
+                </div>
+
+            </div>
+            <!-- Parentesco -->
+            <div id="label_parentesco" class="form-group col-md-8 col-lg-push-2">
+
+            </div>
+            <!-- Essas inf devem ser pedidas somente se campo Ruralino for Sim -->
+            <div id="aluno_da_rural" class="" hidden="hidden">
+                <div class="col-md-12">
+                    <h4 class="text-left col-md-12 alert alert-info"><span class="glyphicon glyphicon-info-sign"
+                                                                           style="float: left;"></span><span
+                            class="col-md-8">Informações necessárias para emitir certificados</span></h4>
+                </div>
+
+                <!-- Matricula Ruralino -->
+                <div class="form-group col-md-8 col-lg-push-2">
+                    <label class="control-label" for="matricula">Matrícula</label>
+                    <div class="">
+                        <input autocomplete="false" id="matricula" name="matricula" type="number" placeholder="Somente números"
+                               class="form-control input-md">
+                    </div>
+                </div>
+
+                <!-- Curso Ruralino -->
+                <div class="form-group col-md-8 col-lg-push-2">
+                    <label class=" control-label" for="curso">Curso</label>
+                    <div class="">
+                        <input id="curso" name="curso" type="text" placeholder="Ex. Sistemas de Informação"
+                               class="form-control input-md">
+                    </div>
+                </div>
+                <!-- bolsista Ruralino - Por padrão cadastrado como nao bolsista -->
+                <!-- Administrador deve setar essa opcao -->
+                <!-- FIM Ruralino -->
+            </div>
+        </div>
+
+        <!-- Informações do depentente-->
+        <div class="col-md-12" id="menor_de_idade">
+                <h3 id="menor_label" class="text-center"  hidden="hidden">Informações do Dependente
+                    <br>
+                    <br>
+                    <a type="button" class="btn btn-primary" onclick="addMenor();" id="addMulti">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        Mais um dependente
+                    </a>
+                </h3>
+                <input type="hidden" name="qtd_menor" value="0" id="qtd_menor">
+            </div>
+
+        <div class="formBoxContainer col-md-12">
+            <div class="col-md-12">
+                <h3 class="text-center">Endereço Residencial</h3>
+            </div>
+            <!-- Rua -->
+            <div class="form-group row col-md-8 col-lg-push-2" style="padding: 0">
+
+                <div class="col-md-10">
+                    <label class=" control-label" for="rua">Rua</label>
+                    <input id="rua" name="rua" type="text" placeholder="Ex. Rua x" class="form-control input-md"
+                           required="">
+                </div>
+                <!-- Numero -->
+                <div class="col-md-2">
+                    <label class=" control-label" for="num">Número</label>
+                    <input id="num" name="numero" pattern="[0-9]*" type="number" placeholder="Ex. 123" class="form-control input-md"
+                           required="">
+                </div>
+            </div>
+
+            
+            <div class="form-group col-md-8 col-lg-push-2">
+
+            </div>
+
+            <!-- Complemento -->
+            <div autocomplete="false" class="form-group col-md-8 col-lg-push-2">
+                <label class=" control-label" for="complemento">Complemento</label>
+                <div class="">
+                    <input autocomplete="false" id="complemento" name="complemento" type="text" placeholder="Ex. sobrado"
+                           class="form-control input-md">
+                </div>
+            </div>
+
+            <!-- Bairro -->
+            <div class="form-group col-md-8 col-lg-push-2">
+                <label class="control-label" for="bairro">Bairro</label>
+                <div class="">
+                    <input id="bairro" name="bairro" type="text" placeholder="Ex. campo lindo"
+                           class="form-control input-md" required>
+                </div>
+            </div>
+
+            <!-- Estado / Cidade-->
+            <div class="form-group col-md-8 col-lg-push-2">
+                <label class="control-label" for="estado">Estado / Cidade</label>
+
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <select class="selectCool" id="estado" name="estado">
+                            <option disabled selected>Estado</option>
+                            <option value="AC">Acre</option>
+                            <option value="AL">Alagoas</option>
+                            <option value="AP">Amapá</option>
+                            <option value="AM">Amazonas</option>
+                            <option value="BA">Bahia</option>
+                            <option value="CE">Ceará</option>
+                            <option value="DF">Distrito Federal</option>
+                            <option value="ES">Espírito Santo</option>
+                            <option value="GO">Goiás</option>
+                            <option value="MA">Maranhão</option>
+                            <option value="MT">Mato Grosso</option>
+                            <option value="MS">Mato Grosso do Sul</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="PA">Pará</option>
+                            <option value="PB">Paraíba</option>
+                            <option value="PR">Paraná</option>
+                            <option value="PE">Pernambuco</option>
+                            <option value="PI">Piauí</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <option value="RN">Rio Grande do Norte</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="RO">Rondônia</option>
+                            <option value="RR">Roraima</option>
+                            <option value="SC">Santa Catarina</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="SE">Sergipe</option>
+                            <option value="TO">Tocantins</option>
+                        </select>
+                    </div>
+                    <!-- Cidade -->
+                    <input id="cidade" name="cidade" type="text" placeholder="Seropédica"
+                           class="form-control input-md" required>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="col-md-12">
+            <h4 class="text-left col-md-12 alert alert-info"><span class="glyphicon glyphicon-info-sign"
+                                                                   style="float: left;"></span><span
+                    class="col-md-8">Crie um login e senha para ter acesso ao sistema</span></h4>
+        </div>
+
+        <div class="formBoxContainer col-md-12">
+            <div class="col-md-12">
+                <h3 class="text-center">Dados Para Acesso a Conta</span></h3>
+            </div>
+            <div class="form-group col-md-8 col-lg-push-2">
+                <label class="control-label" for="usuario">Login</label>
+                <div class="">
+                    <input id="usuario" onfocusout="verificaUsuarioDuplicado();" name="usuario" type="text" placeholder="nomeDoUsuario"
+                           class="form-control input-md" required="">
+                </div>
+                <div class="help-block" id="error-user"></div>
+            </div>
+
+            <div class="form-group col-md-8 col-lg-push-2">
+                <label class="control-label" for="senha">Senha</label>
+                <div class="">
+                    <input id="senha" name="senha" type="password" placeholder="senha" class="form-control input-md"
+                           required="">
+                </div>
+            </div>
+            <div class="form-group col-md-8 col-lg-push-2">
+                <label class="control-label" for="repsenha">Repita a Senha</label>
+                <div class="">
+                    <input id="repsenha" name="senha" onkeyup="verificaSenha();" type="password" placeholder="senha" class="form-control input-md"
+                           required="">
+                </div>
+                <p class="help-block" id="error-senha"></p>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="container-fluid">
+            <input id="btn-senha" onclick="verificadores();" type="button" class="btn btn-primary btn-block" value="Cadastrar"/>
+        </div>
+        <br>
+        <br>
+        <br>
+    </form>
+</div>
+
+
+
+<script type="text/javascript">
+    $('#is_menor').change(function () {
+        var parentesco = $('#label_parentesco');
+        $('.responsavel_label').prop('hidden',!this.checked);
+        $('#menor_label').prop('hidden',!this.checked);
+
+        if(this.checked){//adiciona
+            addMenor();
+            $('#menor_de_idade').addClass('formBoxContainer');
+            $('#menor_de_idade').add;
+
+            parentesco.append(
+                '<label class="control-label" for="parentesco">Parentesco com Dependente</label>\n' +
+                '            <div class="">\n' +
+                '                <input id="parentesco" name="parentesco" type="text" placeholder="pai/mãe"  class="form-control input-md" required="required">\n' +
+                '            </div>');
+
+        }else{//remove
+            $('.aluno').remove();
+            $('#qtd_menor').val(0);
+            $('#menor_de_idade').removeClass('formBoxContainer');
+            parentesco.empty();
+        }
+
+    });
+
+    $('#is_ruralino').change(function () {
+        $('#aluno_da_rural').prop('hidden',!this.checked);
+    });
+
+
+</script>
+</body>

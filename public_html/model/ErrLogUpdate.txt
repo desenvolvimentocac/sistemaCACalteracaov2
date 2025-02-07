@@ -1,0 +1,1 @@
+[12/03/2019 11:37 AM] QUERY: UPDATE turma SET num_vagas = ? ,professor = ? ,is_ativo = ?  WHERE id_turma = ? ERRO: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`dac`.`turma`, CONSTRAINT `professor` FOREIGN KEY (`professor`) REFERENCES `pessoa` (`id_pessoa`) ON DELETE NO ACTION ON UPDATE NO ACTION)

@@ -1,0 +1,105 @@
+<body class="container-fluid aluno">
+
+<div class="header">
+
+    <nav class="navbar navbar-default">
+
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand" href="?pag=DashBoard" style="color: white"><i class="glyphicon glyphicon-chevron-left"></i> Página Inicial</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active" data-toggle="collapse" data-target="#myNavbar"><a data-toggle="" href="#turmas">Gerenciar Alunos</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+    </nav>
+</div>
+<p id="avisos"></p>
+<div style="overflow-x: hidden;">
+    <div id="contTab" class="tab-content">
+        <div id="" class="tab-pane fade in active">
+            <a href="?pag=Cad.Aluno" type="button" class="btn btn-primary"><i
+                    class="glyphicon glyphicon-plus"></i>Inserir Aluno em Turma</a>
+
+            <select class="selectCool2" onchange="obterAlunos();" id="turma">
+                <option value="1" selected="selected">T01</option>
+            </select>
+            <a id="gerarPresenca" href="" class="btn btn-primary">Gerar Lista de presença</a>
+            <h3 class="text-center">Alunos Matriculados na turma</h3>
+
+            <div style="overflow: scroll">
+
+            <table class="table" style="min-width: 400px;">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Idade</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="alunos">
+                </tbody>
+            </table>
+
+            </div>
+            <h3 class="text-center">Alunos Na lista de Espera</h3>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Posição</th>
+                    <th>Nome</th>
+                    <th>Idade</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="listaEspera">
+                </tbody>
+            </table>
+
+            <h3 class="text-center">Alunos com Matricula Trancada</h3>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Nome</th>
+                    <th>Idade</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="matTrancada">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).on("load", loader());
+
+    function loader() {
+        ajaxLoadGET('control/main.php?req=selectTurmaAtiva', parseTurmasAtivas, '#turma');
+        getMsgs();
+    }
+
+    function confirmacaoTrancarMatricula(id) {
+        let resposta = confirm("Deseja trancar a matricula?");
+        if(resposta == true){
+            window.location.href = "control/main.php?req=trancarMatricula&id="+id;
+        }
+    }
+</script>
+</body>

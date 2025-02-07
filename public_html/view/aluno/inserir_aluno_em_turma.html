@@ -1,0 +1,157 @@
+<body class="container-fluid usuario">
+
+<div class="header">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div>
+                <ul class="nav navbar-nav">
+                    <li><a href="index.php?pag=Alunos"><i class="glyphicon glyphicon-chevron-left"></i> Voltar a
+                        Gerência de Alunos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<p id="avisos"></p>
+
+<div class="container">
+    <!-- Form Name  -->
+    <form class="form-horizontal" action="control/main.php?req=insertAluno" method="POST">
+        <br>
+        <div class="formBoxContainer col-md-12">
+            <div class="form-group container">
+                <h3 class="text-center col-md-12">Cadastro de Aluno em Uma Turma</h3>
+
+                <div class="col-md-12">
+                    <label for="turma">TURMA: </label>
+                    <select class="selectCool" id="turma" name="turma" onchange="obterInfoTurma();"
+                            title="Escolha uma Turma"
+                            required="required">
+                        <option value="">Selecione uma Turma</option>
+
+                    </select>
+                </div>
+
+                <div class="col-md-12">
+                    <p><b>DIA: </b><span id="diaTurma"></span> <span id="horarioTurma"></span></p>
+                    <p><b>PRÉ REQUISITO: </b><span id="preReq"></span></p>
+                    <p><b>VAGAS: </b><span class="vagas">X</span>
+                    </p>
+                </div>
+                <div class="col-md-11">
+                    <!--div class="col-md-2">
+                        <input type="button" class="btn btn-danger" onclick="Desmarcar();" value="Desmarcar todos"/>
+                    </div>
+
+                    <div class="col-md-10 searchBox">
+                        <input type="text" class="searchBox row" id="searchNames" onclick="limpaPesquisa()"
+                               onkeyup="getCandidatosByName();"
+                               placeholder="Buscar Candidados...">
+                    </div-->
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <input type="button" class="btn btn-danger" onclick="Desmarcar();" value="Desmarcar todos"/>
+                        </div>
+
+                        <div class="col-lg-6 smallScreenSpaceCorrection">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                     <button id="bt-cad" class="btn btn-primary" type="button" onclick="pesquisaCad();"
+                                             disabled>Buscar</button>
+                                </span>
+                                <div class="searchBox">
+                                    <input type="text" class="form-control" id="searchNames"
+                                           onclick="limpaPesquisa('bt-cad','searchNames')"
+                                           placeholder="Nome do Usuário ...">
+                                </div>
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-lg-6 -->
+                        <br>
+                    </div>
+
+                    <br>
+                    <br>
+                    <div style="overflow-x: auto">
+                    <table class="table" style="margin-top: 20px">
+                        <thead>
+                        <tr>
+                            <th class=''>Nome</th>
+                            <th class=''>Função</th>
+                            <th class=''>Idade</th>
+                            <th class=''>Inserir?</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tcandidatos"></tbody>
+                    </table>
+                    </div>
+
+                    <div class="container-fluid text-center">
+                        <ul class="pagination coolPaginator" id="paginador">
+                            <li><a href="#" onclick="trocaPagCad(pagina-1)" id="goBack"><span
+                                    class="fa fa-chevron-left"></span></a></li>
+                            <li>
+                                <span>
+                                    <span>
+                                        <input id="paginic" type="text" onfocus="$(this).val('')" onblur="$(this).val(pagina)" onkeyup="trocaPagCad(parseInt($(this).val()))">
+                                    </span>
+                                    de
+                                    <span id="pagfim">
+                                        N
+                                    </span>
+                                </span>
+                            </li>
+                            <li><a href="#" onclick="trocaPagCad(pagina+1)" id="goNext"><span
+                                    class="fa fa-chevron-right"></span></a></li>
+                        </ul>
+                    </div>
+
+                    <p><b>Selecionados: <span class="selecionados">0</span> / Vagas: <span class="vagas">X</span></b>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-12">
+                <h4 class="text-left col-md-12 alert alert-info">
+                    <span class="glyphicon glyphicon-info-sign" style="float: left;"></span>
+                    <span class="col-md-8">
+                        Caso o número de pessoas selecionadas supere o número de vagas, os alunos serão
+                        cadastrados em ordem alfabética. Para cadastrar em outra ordem cadastre um a um.
+                    </span>
+                </h4>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="container-fluid">
+            <input id="enviar" type="submit" class="btn btn-primary btn-block" value="Cadastrar"/>
+        </div>
+        <br>
+        <br>
+    </form>
+
+</div>
+<script type="text/javascript">
+    var totalpaginas = 1;
+    var pagina = 1;
+    var nivel = "todos";
+    $(document).ready(loader(), $('#paginic').val(pagina));
+
+    function loader() {
+        ajaxLoadGET('control/main.php?req=selectTurmaAtiva', parseTurmasComVagas, '#turma', obterInfoTurma);
+        getCandidatosByName();
+        getMsgs();
+        ajaxLoadGET('control/main.php?req=getPageNumber&nivel=' + nivel, setPaginador, '#cadastrosRuralino');
+    }
+
+    function trocaPagCad(pag) {
+        Desmarcar();
+        if (pag <= totalpaginas && pag > 0) pagina = pag;
+        $('#paginic').empty().val(pagina);
+        getCandidatosByName();
+    }
+</script>
+</body>

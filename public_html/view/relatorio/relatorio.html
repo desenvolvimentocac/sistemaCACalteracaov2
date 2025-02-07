@@ -1,0 +1,172 @@
+<body class="container-fluid" id="relatorios">
+
+<div class="header">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand" href="?pag=DashBoard" style="color: white"><i class="glyphicon glyphicon-chevron-left"></i> Página Inicial</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active" data-target="#myNavbar"><a data-toggle="tab" href="#rmain">Relatório geral</a></li>
+                    <li data-target="#myNavbar"><a data-toggle="tab" href="#histTab">Históricos</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+</div>
+
+<p id="avisos"></p>
+
+<div style="overflow-x: hidden;">
+    <div id="contTab" class="tab-content">
+        <div id="rmain" class="tab-pane fade active in">
+
+            <div class="col-md-12">
+                <span>Periodo:</span>
+                <select class="selectCool2" id="periodo" onchange="getPeriodoSelecionado();">
+                </select>
+            </div>
+
+            <h3 style="padding-top: 66px;">Cadastros</h3>
+            <P>Alunos da Rural: <span id="cadastrosRuralino"></span> </P>
+            <p>Crianças: <span id="cadastrosCrianca"></span> </p>
+            <p>Total de cadastros: <span id="totalCadastros"></span> </p>
+
+            <h3 class="text-center">Alunos por Turma</h3>
+            <p>Total matriculado em turmas: <span id="totalAlunosAtivos"></span> Alunos.</p>
+            <p>Total em lista de espera: <span id="totalAlunosEspera"></span> Alunos.</p>
+            <div class="row">
+                <table width="80%" align="center" class="table">
+                    <thead>
+                    <tr>
+                        <th class="col-md-4">Turma</th>
+                        <th class="col-md-2">Número de Alunos</th>
+                        <th class="col-md-2">Tam da Lista de espera</th>
+                    </tr>
+                    </thead>
+                    <tbody id="alunosPorOficina">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- HISTORICO -->
+        <div id="histTab" class="tab-pane fade">
+            <h3>Busca de Histórico</h3>
+            <div class="col-lg-6 smallScreenSpaceCorrection">
+                <div class="input-group">
+                            <span class="input-group-btn">
+                                <button id="bt-pesquisa" class="btn btn-primary" type="button" onclick="buscar()"
+                                        disabled>Buscar</button>
+                            </span>
+                    <div class="searchBox">
+                        <input type="text" class="form-control searchBox" id="searchName"
+                               onclick="limpaPesquisa('bt-pesquisa','searchName')"
+                               placeholder="Nome do Aluno ...">
+                    </div>
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+
+            <div class="row">
+                <table width="80%" align="center" class="table">
+                    <thead>
+                    <tr>
+                        <th class="col-md-4">Nome</th>
+                        <th class="col-md-2">Atividade</th>
+                        <th class="col-md-2">Turma</th>
+                        <th class="col-md-2">Ano/periodo</th>
+                    </tr>
+                    </thead>
+                    <tbody id="alunos">
+                    <tr>
+                        <td class="col-md-4">Busque um nome</td>
+                        <td class="col-md-2">  </td>
+                        <td class="col-md-2"> </td>
+                        <td class="col-md-2"> </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="application/javascript">
+    $(document).ready(loaderRelatorios);
+
+
+    function loaderRelatorios() {
+        $('.atividade-name').prepend(AtividadeName);
+        ajaxLoadGET('control/main.php?req=selectTempoHistorico', parsePeriodosSelect, '#periodo', getPeriodoSelecionado);
+        ajaxLoadGET('control/main.php?req=selectAlunosCadastrados', parseCadastros, '#cadastrosRuralino');
+        ajaxLoadGET('control/main.php?req=selectAlunosHistorico', parseAlunosHistorico, '#alunos');
+
+    }
+
+    function getPeriodoSelecionado() {
+        let periodo = $('#periodo').val();
+        ajaxLoadGET('control/main.php?req=relAlunosPorTurmaPeriodo&id=' + periodo, jsonParseAlunosPorOficinas, '#alunosPorOficina');
+
+        function jsonParseAlunosPorOficinas(resposta, corpo) {
+            let objJson = JSON.parse(resposta);
+            let soma = 0;
+            let espera = 0;
+            for (let i in objJson) {
+                corpo.append(
+                    '<tr>\n' +
+                    '     <td class="col-md-4">' + objJson[i].oficina + ' ' + objJson[i].turma +  '</td>\n' +
+                    '     <td class="col-md-2">' + objJson[i].alunos + '</td>\n' +
+                    '     <td class="col-md-2">' + objJson[i].espera + '</td>\n' +
+                    '</tr>');
+                soma += parseInt(objJson[i].alunos);
+                espera += parseInt(objJson[i].espera);
+            }
+            $('#totalAlunosAtivos').empty().append(soma);
+            $('#totalAlunosEspera').empty().append(espera);
+        }
+    }
+
+    function parseCadastros(resposta) {
+        let objJson = JSON.parse(resposta);
+        $('#cadastrosRuralino').empty().append(objJson.ruralino);
+        $('#cadastrosCrianca').empty().append(objJson.crianca);
+        $('#totalCadastros').empty().append(objJson.total);
+    }
+
+    function buscar() {
+        $('#bt-pesquisa').attr("disabled", "disabled");//importante para nao envia 2 requisicoes iguais
+        let nome = $('#searchName').val();
+        ajaxLoadGET('control/main.php?req=selectAlunosHistorico&nome='+nome, parseAlunosHistorico, '#alunos');
+    }
+    function parseAlunosHistorico(resposta,corpo) {
+        try{
+            let objJson = JSON.parse(resposta);
+            for (let i in objJson) {
+                corpo.append(
+                    '<tr>\n' +
+                    '     <td class="col-md-4">' + objJson[i].nome +' '+ objJson[i].sobrenome + '</td>\n' +
+                    '     <td class="col-md-2">' + objJson[i].atividade + ' </td>\n' +
+                    '     <td class="col-md-2">' + objJson[i].turma + '</td>\n' +
+                    '     <td class="col-md-2">' + objJson[i].ano + '/' + objJson[i].periodo + '</td>\n' +
+                    '</tr>');
+            }
+        }catch (e) {
+            corpo.append(
+                '<tr>\n' +
+                '     <td class="col-md-4">Nada encontrado</td>\n' +
+                '     <td class="col-md-2">  </td>\n' +
+                '     <td class="col-md-2"> </td>\n' +
+                '     <td class="col-md-2"> =(</td>\n' +
+                '</tr>');
+        }
+    }
+</script>
+</body>

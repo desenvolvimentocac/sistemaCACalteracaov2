@@ -1,0 +1,253 @@
+/*
+    BOOTSTRAP STYLE EXPANSION,
+    by vinicius Martins
+
+    versão: 1.00
+*/
+
+.col-xs-11-5, .col-sm-11-5, .col-md-11-5, .col-lg-11-5, .col-xs-10-5, .col-sm-10-5, .col-md-10-5, .col-lg-10-5 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.col-xs-0-5, .col-sm-0-5, .col-md-0-5, .col-lg-0-5, .col-xs-1-5, .col-sm-1-5, .col-md-1-5, .col-lg-1-5{
+    position: relative;
+    min-height: 1px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+/*11,5*/
+.col-xs-11-5 {
+    width: 4.166666666%;
+}
+.col-xs-pull-11-5 {
+    right: 4.166666666%;
+}
+.col-xs-push-11-5 {
+    left: 4.166666666%;
+}
+.col-xs-offset-11-5 {
+    margin-left: 4.166666666%;
+}
+/*0,5*/
+.col-xs-0-5 {
+    width: 4.166666666%;
+}
+.col-xs-pull-0-5 {
+    right: 4.166666666%;
+}
+.col-xs-push-0-5 {
+    left: 4.166666666%;
+}
+.col-xs-offset-0-5 {
+    margin-left: 4.166666666%;
+}
+/*1,5*/
+.col-xs-1-5{
+    width: 12.49999998%
+}
+.col-xs-pull-1-5{
+    right: 12.49999998%
+}
+.col-xs-push-1-5{
+    left: 12.49999998%
+}
+.col-xs-offset-1-5{
+    margin-left: 12.49999998%
+}
+
+/*10,5*/
+.col-xs-10-5{
+    width: 87.49999999%
+}
+.col-xs-pull-10-5{
+    right: 87.49999999%
+}
+.col-xs-push-10-5{
+    left: 87.49999999%
+}
+.col-xs-offset-10-5{
+    margin-left: 87.49999999%
+}
+
+
+
+@media (min-width: 768px) {
+    .col-sm-0-5,.col-sm-11-5 {
+        float: left;
+    }
+    .col-sm-11-5 {
+        width: 4.166666666%;
+    }
+    .col-sm-pull-11-5 {
+        right: 4.166666666%;
+    }
+    .col-sm-push-11-5 {
+        left: 4.166666666%;
+    }
+    .col-sm-offset-11-5 {
+        margin-left: 4.166666666%;
+    }
+
+    .col-sm-0-5 {
+        width: 4.166666666%;
+    }
+    .col-sm-pull-0-5 {
+        right: 4.166666666%;
+    }
+    .col-sm-push-0-5 {
+        left: 4.166666666%;
+    }
+    .col-sm-offset-0-5 {
+        margin-left: 4.166666666%;
+    }
+
+    .col-sm-10-5{
+        width: 87.49999999%
+    }
+    .col-sm-pull-10-5{
+        right: 87.49999999%
+    }
+    .col-sm-push-10-5{
+        left: 87.49999999%
+    }
+    .col-sm-offset-10-5{
+        margin-left: 87.49999999%
+    }
+    /*1,5*/
+    .col-sm-1-5{
+        width: 12.49999998%
+    }
+    .col-sm-pull-1-5{
+        right: 12.49999998%
+    }
+    .col-sm-push-1-5{
+        left: 12.49999998%
+    }
+    .col-sm-offset-1-5{
+        margin-left: 12.49999998%
+    }
+}
+@media (min-width: 992px) {
+    .col-md-0-5, .col-md-11-5{
+        float: left;
+    }
+    .col-md-0-5 {
+        width: 4.166666666%;
+    }
+    .col-md-11-5{
+        width: 95.83333336%;
+    }
+    /*PULL*/
+    .col-md-pull-11-5 {
+        right: 95.83333336%;
+    }
+    .col-md-pull-0-5 {
+        right: 4.166666666%;
+    }
+    /*PUSH*/
+    .col-md-push-0-5{
+        left: 95.83333336%;
+    }
+    .col-md-push-0-5 {
+        left: 4.166666666%;
+    }
+    /*OFFSET*/
+    .col-md-offset-11-5 {
+        margin-left: 95.83333336%;
+    }
+    .col-md-offset-0-5{
+        margin-left: 4.166666666%;
+    }
+
+    .col-md-10-5{
+        width: 87.49999999%
+    }
+    .col-md-pull-10-5{
+        right: 87.49999999%
+    }
+    .col-md-push-10-5{
+        left: 87.49999999%
+    }
+    .col-md-offset-10-5{
+        margin-left: 87.49999999%
+    }
+
+    /*1,5*/
+    .col-md-1-5{
+        width: 12.49999998%
+    }
+    .col-md-pull-1-5{
+        right: 12.49999998%
+    }
+    .col-md-push-1-5{
+        left: 12.49999998%
+    }
+    .col-md-offset-1-5{
+        margin-left: 12.49999998%
+    }
+}
+
+@media (min-width: 1200px) {
+    .col-lg-0-5, .col-lg-11-5{
+        float: left;
+    }
+    .col-lg-0-5 {
+        width: 4.166666666%;
+    }
+    .col-lg-11-5{
+        width: 95.83333336%;
+    }
+    /*PULL*/
+    .col-lg-pull-11-5 {
+        right: 95.83333336%;
+    }
+    .col-lg-pull-0-5 {
+        right: 4.166666666%;
+    }
+    /*PUSH*/
+    .col-lg-push-0-5{
+        left: 95.83333336%;
+    }
+    .col-lg-push-0-5 {
+        left: 4.166666666%;
+    }
+    /*OFFSET*/
+    .col-lg-offset-11-5 {
+        margin-left: 95.83333336%;
+    }
+    .col-lg-offset-0-5{
+        margin-left: 4.166666666%;
+    }
+
+    .col-lg-10-5{
+        width: 87.49999999%
+    }
+    .col-lg-pull-10-5{
+        right: 87.49999999%
+    }
+    .col-lg-push-10-5{
+        left: 87.49999999%
+    }
+    .col-lg-offset-10-5{
+        margin-left: 87.49999999%
+    }
+
+    /*1,5*/
+    .col-lg-1-5{
+        width: 12.49999998%
+    }
+    .col-lg-pull-1-5{
+        right: 12.49999998%
+    }
+    .col-lg-push-1-5{
+        left: 12.49999998%
+    }
+    .col-lg-offset-1-5{
+        margin-left: 12.49999998%
+    }
+}
+

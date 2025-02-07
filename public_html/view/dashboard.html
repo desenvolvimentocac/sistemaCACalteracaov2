@@ -1,0 +1,75 @@
+<body id="dashboard" style="overflow: hidden">
+<!-- Sidebar Holder -->
+<div class="sidebar col-md-1">
+    <br>
+    <button class="btn btn-info closeBtnAtSmallScreen" onclick="btnTglr()">X</button>
+    <ul class="list-unstyled" id="menu">
+        <li class="text-center">
+            <a href="control/main.php?req=logout">
+                <i class="glyphicon glyphicon-log-out"></i>
+                <br>Sair
+            </a>
+        </li>
+    </ul>
+</div>
+<!-- Page Content Holder -->
+<div class="content container-fluid" style="overflow: auto">
+    <p id="avisos"></p>
+    <div class="row">
+        <p id="usr">
+            Seja bem vindo <span id="user"></span>. <br> Você tem autoridade de <b><span id="nv"></span></b>.
+        </p>
+    </div>
+    <hr>
+    <br>
+    <button class="btn btn-primary" onclick="btnTglr()">Menu</button>
+    <h2><b>Turmas Ativas em <span id="anoAtual"></span>.<span id="periodoAtual"></span></b></h2>
+    <br>
+    <div class="tableContainer">
+        <table class="table">
+            <thead>
+            <tr>
+                <th class='col-md-2' id="atividade-header-table"></th>
+                <th class='col-md-2'>Turma</th>
+                <th class='col-md-2'>Dia da Semana</th>
+                <th class='col-md-2'>Horário</th>
+                <th class='col-md-1'>Sala</th>
+                <th class='col-md-2' id="prof-header-table">Professor</th>
+                <th class='col-md-1'>Vagas</th>
+            </tr>
+            </thead>
+            <tbody id="t_oficinas"></tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(loader());
+
+    function btnTglr() {
+        $('.sidebar').toggle(100);
+        if(($(window).height() < 640) && ($(window).width() < 539)){
+            $('.content').toggle(100);
+            $('.collapse').collapse('hide');
+        }
+    }
+
+    function loader() {
+        $('#atividade-header-table').prepend(AtividadeName);
+        $('#prof-header-table').empty().prepend(CargoProf);
+        ajaxLoadGET('control/main.php?req=selecUsuarioLogado', parseUsuario, '#nv');
+        ajaxLoadGET('control/main.php?req=selectTurmaAtiva', parseTurmaHorario, '#t_oficinas');
+        ajaxLoadGET('control/main.php?req=selectPeriodoAtual', parsePeriodoText, '#periodoAtual');
+        getMsgs();
+        getMenu();
+        //btnTglr();
+    }
+
+    // OnClick close submenu
+    $('.submenu').click( function(e) {
+        $('.collapse').collapse('hide');
+    });
+
+    //$('#footerYear').append((new Date).getFullYear());
+</script>
+</body>

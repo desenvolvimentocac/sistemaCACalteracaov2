@@ -1,0 +1,163 @@
+<body class="container-fluid usuario">
+
+<div class="header">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand" href="index.php?pag=Turmas" style="color: #FFF"><i class="glyphicon glyphicon-chevron-left"></i>
+                    Voltar para Gerência de Turmas</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active" data-toggle="collapse" data-target="#myNavbar"><a data-toggle="" href="#turmas">Cadastro
+                        de Turmas</a></li>
+                </ul>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+
+<div class="container">
+    <p id="avisos"></p>
+    <!-- Form Name  -->
+    <form class="form-horizontal" action="control/main.php?req=insertTurma" method="POST">
+        <br>
+        <div class="formBoxContainer col-md-12">
+            <div class="form-group container">
+                <h3 class="text-center col-md-12">Informações Gerais de Oficina</h3>
+
+                <div class="col-md-12">
+                    <select class="selectCool2" id="selectOficina" name="oficina_id"
+                            title="Escolha uma oficina"
+                            required="required">
+                        <option value="">Selecione uma Oficina</option>
+
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <select class="selectCool2" id="selectProf" name="prof_id" style="color: black"
+                            title="Escolha uma Professor" required="required">
+                        <option value="">Selecione um professor</option>
+                    </select>
+                </div>
+                <!-- Infraestrutura -->
+                <div class="">
+                    <div class="col-md-12">
+                        <select class="selectCool2" id="selectPredio" onchange="SalaFromPredioId();"
+                                title="Escolha uma oficina"
+                                required="required">
+                            <option value="" selected disabled>Escolha Um Prédio</option>
+                        </select>
+                    </div>
+                    <div id="carregandoSalas"></div>
+                    <div class="col-md-12">
+                        <select class="selectCool2" id="selectSala" name="sala_id" onchange="disponibilidade();"
+                                required="required">
+                            <option value="" selected disabled>Selecione uma sala</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="col-md-4" style="margin-top: 16px">
+                    <input id="vagas" name="vagas" type="number" placeholder="numero de vagas"
+                           class="form-control input-md"
+                           required="" min="1">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="formBoxContainer col-md-12">
+            <h3 class="text-center col-md-12">Escolha de Dias da Semana</h3>
+
+            <div class="form-group">
+                <div class="text-center">
+
+                <span class="button-checkbox ">
+                    <button type="button" class="btn btn-primary">Segunda</button>
+                    <input type="checkbox" name="seg" class="hidden"/>
+                </span>
+
+                    <span class="button-checkbox">
+                    <button type="button" class="btn btn-primary">Terça</button>
+                    <input type="checkbox" name="ter" class="hidden"/>
+                </span>
+
+                    <span class="button-checkbox">
+                    <button type="button" class="btn btn-primary">Quarta</button>
+                    <input type="checkbox" name="qua" class="hidden"/>
+                </span>
+
+                    <span class="button-checkbox">
+                    <button type="button" class="btn btn-primary">Quinta</button>
+                    <input type="checkbox" name="qui" class="hidden"/>
+                </span>
+
+                    <span class="button-checkbox">
+                    <button type="button" class="btn btn-primary">Sexta</button>
+                    <input type="checkbox" name="sex" class="hidden"/>
+                </span>
+                    <br>
+                    <br>
+                </div>
+                <h3 class="text-center col-md-12">Horários ocupados</h3>
+                <!--Uma Tabela de Horário, shhhh, não conta pra ninguém-->
+                <div class="container-fluid">
+                    <div class="timetable"></div>
+                </div>
+            </div>
+        </div>
+        <div class="formBoxContainer col-md-12">
+            <h3 class="text-center col-md-12">Escolha de Horário</h3>
+
+            <div class="form-group col-md-9 col-md-push-4">
+                <div class=" col-md-3">
+                    <label class="control-label" for="horarioInic">Inicia as: </label>
+                    <div class="">
+                        <input id="horarioInic" name="horario_inic" type="time" placeholder=""
+                               class="form-control input-md" required="">
+                    </div>
+                </div>
+                <div class=" col-md-3">
+                    <label class="control-label" for="horarioFim">Termina as: </label>
+                    <div class="">
+                        <input id="horarioFim" name="horario_fim" type="time" placeholder="Início (--:--)"
+                               class="form-control input-md" required="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Submit -->
+        <div class="container-fluid">
+            <input id="enviar" type="submit" class="btn btn-primary btn-block" value="Cadastrar"/>
+        </div>
+        <br>
+        <br>
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    var selectPredioTurma = $('#selectPredio');
+    var selectSalaTurma = $('#selectSala');
+    var selectOficinaTurma = $('#selectOficina');
+    var selectProfTurma = $('#selectProf');
+    var horariosTurma = $('#horariosDisponiveis');
+
+    $(document).on("load", carregadorCadTurmas());
+    $(document).on("ready", getMsgs());
+
+</script>
+<script src="js/checkboxButton.js"></script>
+
+</body>

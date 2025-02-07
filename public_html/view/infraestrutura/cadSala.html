@@ -1,0 +1,47 @@
+<body class="container-fluid infra">
+
+
+<div class="header">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid" style="overflow-x: hidden">
+            <div>
+                <ul class="nav navbar-nav">
+                    <li><a href="index.php?pag=Infraestrutura"><i class="glyphicon glyphicon-chevron-left"></i> Voltar a
+                        Gerência de Infraestrutura</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div class="container">
+    <form class="form-horizontal container" action="control/main.php?req=insertSala" method="POST">
+        <div id="tbody" class="form-group">
+            <div class="form-group">
+                <h2>Cadastro de Novas Salas</h2>
+                <br>
+                <br>
+                <div class="input-group">
+                    <select id="tipoPredio" name="predio_id" class="selectCool2" title="Escolha um predio" required
+                            autocomplete="off"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="nome">Nome</label>
+                <div class="">
+                    <input id="nome" name="nome" type="text" placeholder="Ex. Sala de desenho"
+                           class="form-control input-md" required autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group"><!-- Submit -->
+                <input id="enviar" type="submit" class="btn btn-primary btn-block" value="Cadastrar"/>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script type="text/javascript">
+    $('#tbody').on("load", ajaxLoadGET('control/main.php?req=selectPredio', jsonParseNomePredios, '#tipoPredio'));
+
+</script>
+</body>

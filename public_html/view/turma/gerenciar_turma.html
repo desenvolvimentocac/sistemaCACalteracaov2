@@ -1,0 +1,149 @@
+<body class="container-fluid turmas">
+<!--div class="col-md-0-5 sidebar">
+    sidebar place -holder
+</div-->
+<div class="header">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand" href="?pag=DashBoard" style="color: white"><i class="glyphicon glyphicon-chevron-left"></i> Página Inicial</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active" data-toggle="collapse" data-target="#myNavbar"><a href="#">Gerenciar Turmas</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<p id="avisos"></p>
+
+<div style="overflow-x: hidden;">
+    <div id="" class="" style="padding: 20px;">
+        <div class="row">
+            <div class="col-md-2">
+                <a href="?pag=Cad.Turma" type="button" class="btn btn-primary"><i
+                        class="glyphicon glyphicon-plus"></i> Nova Turma</a>
+            </div>
+
+            <div class="col-lg-6 smallScreenSpaceCorrection">
+                <div class="input-group">
+                    <div class="searchBox">
+                        <select class="selectCool2" id="periodo" onchange="loadTurmaHistorico();">
+                        </select>
+                    </div>
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+            <br>
+        </div>
+
+        <h3 class="text-center">Turmas Ativas</h3>
+        <div style="overflow-x: auto">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th class=''>OFICINA</th>
+                    <th class=''>DIA DA SEMANA</th>
+                    <th class=''>HORÁRIO</th>
+                    <th class=''>SALA</th>
+                    <th class=''>PROFESSOR</th>
+                    <th class=''>Vagas Totais</th>
+                    <th class=''></th>
+                </tr>
+                </thead>
+                <tbody id="turmas">
+                <tr>
+                    <td class='col-md-2'>Nenhuma</td>
+                    <td class='col-md-2'>Turma</td>
+                    <td class='col-md-2'>Por</td>
+                    <td class='col-md-2'>Aqui</td>
+                    <td class='col-md-2'>&nbsp;</td>
+                    <td class='col-md-2'>&nbsp;</td>
+                    <td class='col-md-2'>&nbsp;</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="text-center">Turmas Inativas</h3>
+        <div style="overflow-x: auto">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th class=''>OFICINA</th>
+                    <th class=''>DIA DA SEMANA</th>
+                    <th class=''>HORÁRIO</th>
+                    <th class=''>SALA</th>
+                    <th class=''>PROFESSOR</th>
+                    <th class=''>Vagas Totais</th>
+                    <th class=''></th>
+                </tr>
+                </thead>
+                <tbody id="turmasInativas">
+                <tr>
+                    <td class='col-md-2'>Nenhuma</td>
+                    <td class='col-md-2'>Turma</td>
+                    <td class='col-md-2'>Por</td>
+                    <td class='col-md-2'>Aqui</td>
+                    <td class='col-md-2'>&nbsp;</td>
+                    <td class='col-md-2'>&nbsp;</td>
+                    <td class='col-md-2'>&nbsp;</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(document).on("load", loader());
+
+    function loader() {
+        ajaxLoadGET('control/main.php?req=selectTempoHistorico', parsePeriodosSelect, '#periodo', loadTurmaHistorico);
+        getMsgs();
+    }
+
+    function loadTurmaHistorico() {
+        let periodo = $('#periodo').val();
+        ajaxLoadGET('control/main.php?req=selectTurma&id=' + periodo, parseTurmaHorario, '#turmas');
+
+        function parseTurmaHorario(resposta, corpo) {
+            let objJson = JSON.parse(resposta);
+            let ativas = '';
+            let inativas = '';
+            for (i in objJson) {
+                if(objJson[i].is_ativo == '1'){
+                    ativas += '<tr>' +
+                        '<td class=\'col-md-2\'>' + objJson[i].oficina + ' ' + objJson[i].turma + '</td>' +
+                        '<td class=\'col-md-2\'>' + getDiaSemana(objJson[i]) + '</td>' +
+                        '<td class=\'col-md-2\'>' + objJson[i].inicio + " as " + objJson[i].fim + '</td>' +
+                        '<td class=\'col-md-2\'>' + objJson[i].sala + '</td>' +
+                        '<td class=\'col-md-2\'>' + objJson[i].professor + '</td>' +
+                        '<td class=\'col-md-2\'>' + objJson[i].vagas + '</td>' +
+                        '<td class=\'col-md-2\'><a href="?pag=Edit.Turma&id=' + objJson[i].id_turma + '" class="btn btn-primary"><span class=\'glyphicon glyphicon-pencil\'></span></a> </td>' +
+                        '</tr>';
+                }else{
+                    inativas += '<tr>' +
+                        '<td class=\'col-md-2\'>' + objJson[i].oficina + '</td>' +
+                        '<td class=\'col-md-2\'>' + getDiaSemana(objJson[i]) + '</td>' +
+                        '<td class=\'col-md-2\'>' + objJson[i].inicio + " as " + objJson[i].fim + '</td>' +
+                        '<td class=\'col-md-2\'>' + objJson[i].sala + '</td>' +
+                        '<td class=\'col-md-2\'>' + objJson[i].professor + '</td>' +
+                        '<td class=\'col-md-2\'>' + objJson[i].vagas + '</td>' +
+                        '<td class=\'col-md-2\'><a href="?pag=Edit.Turma&id=' + objJson[i].id_turma + '" class="btn btn-primary"><span class=\'glyphicon glyphicon-pencil\'></span></a> </td>' +
+                        '</tr>'
+                }
+            }
+            corpo.append(ativas);
+            if(inativas.length>2) $('#turmasInativas').empty().append(inativas);
+        }
+    }
+</script>
+</body>

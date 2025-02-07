@@ -1,0 +1,63 @@
+<body class="container-fluid oficinas">
+<div class=" ">
+    <div class="header">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid" style="overflow-x: hidden">
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="index.php?pag=Oficinas" class="atividade-name"><i class="glyphicon glyphicon-chevron-left"></i> Voltar a Gerência de </a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="container" style="overflow-x: hidden">
+        <form id="editOficina" class="form-horizontal" action="" method="POST">
+
+            <div class="form-group">
+                <h2 class="" style="">Edição de <span class="atividade-name"></span> - <span id="nomeHeader"></span></h2>
+                <br><br>
+                <label class="control-label" for="nome">Nome</label>
+                <div class="">
+                    <input id="nome" name="nome" type="text" placeholder="Desenho"  class="form-control input-md" required="">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label" for="pre_requisito">Pré-requisito</label>
+                <div class="">
+                    <input id="pre_requisito" name="pre_requisito" type="text" placeholder="Ex. Aluno deve ter feito DANÇA 1"  class="form-control input-md">
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="form-group"><!-- Submit -->
+                <input id="enviar" type="submit" class="btn btn-primary btn-block" value="Atualizar" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var controlador = 'control/main.php?req=selectOficinaById&id='+getParameterByName('id');
+
+    $(document).ready(loader());
+
+    function loader() {
+        $('.atividade-name').append(AtividadeName);
+        getMsgs();
+        ajaxLoadGET(controlador,jsonParseEditOficina,'#carregador');
+        $('#editOficina').attr('action', 'control/main.php?req=updateOficina&id='+getParameterByName('id'));
+    }
+
+    function jsonParseEditOficina(resposta,corpo) {
+        var jsonObj = JSON.parse(resposta);
+        $('#nome').val(jsonObj[0].nome);
+        $('#nomeHeader').append(jsonObj[0].nome);
+        $('#pre_requisito').val(jsonObj[0].pre_requisito);
+    }
+
+
+</script>
+</body>

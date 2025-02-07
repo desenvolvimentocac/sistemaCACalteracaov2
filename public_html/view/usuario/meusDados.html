@@ -1,0 +1,157 @@
+<body class="container-fluid usuario">
+<div class="header">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid" style="overflow-x: hidden">
+            <div>
+                <ul class="nav navbar-nav">
+                    <li><a href="?pag=DashBoard"><i class="glyphicon glyphicon-chevron-left"></i> Voltar Gerência de
+                        Conta</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<p id="avisos"></p>
+<div class="container">
+    <h3 class="text-center">Visualizando dados de <span id="nomeLabel"></span></h3>
+    <h4 id="dadosBasicos">Dados Básicos</h4>
+    <hr/>
+    <div id="nomeNasc">
+        <p>Nome: <span class="nome"> </span> <span id="sobrenome"></span></p>
+        <p>data nascimento: <span id="nasc"></span></p>
+    </div>
+    <div id="maiorIdade">
+        <div style="padding-top: 15px;">
+            <h4 id="contato">Contato</h4>
+            <hr/>
+            <div id="tels"></div>
+        </div>
+        <div id="menorIdade" hidden="hidden" style="padding-top: 15px;">
+            <div class="carr"></div>
+            <h4 class="text-center">Dados do Responsavel</h4>
+            <hr/>
+            <p>Nome: <span id="respnome"></span> <span id="respsobrenome"></span></p>
+            <p>Parentesco: <span id="parentesco"></span></p>
+
+        </div>
+
+        <h4 id="endereco" style="padding-top: 15px;">Endereço</h4>
+        <hr/>
+        <div id="end">
+            <p><span id="rua"></span>, <span id="num"></span> <span id="complemento"></span></p>
+            <p>Bairro: <span id="bairro"></span>, <span id="cidade"></span> - <span id="estado"></span></p>
+        </div>
+
+        <div style="padding-top: 15px;">
+            <div class="carr"></div>
+            <h4 id="ruraLabel">Aluno da Rural</h4>
+            <hr/>
+            <div id="ruralinoConteudo" hidden="hidden">
+                <p>Curso: <span id="curso"></span></p>
+                <p>Matricula: <span id="matricula"></span></p>
+                <p>Bolsista do CAC: <span id="bolsista"></span></p>
+                <p>*somente administrador pode definir o estatus de bolsista.</p>
+            </div>
+
+        </div>
+
+        <div id="documentos" hidden="hidden" style="padding-top: 15px;">
+            <h4 id="docLabel">Documentação</h4>
+            <hr/>
+            <div id="docs">
+                <p>Tipo: <span id="tipoDoc"></span></p>
+                <p> Numeração: <span id="numDoc"></span></p>
+            </div>
+        </div>
+
+        <div id="dependentes" style="padding-top: 15px;">
+            <h4>Dependentes</h4>
+            <form id="formDependentes" action=" " method="POST">
+                <div id="menor_de_idade">
+                    <input type="hidden" name="qtd_menor" value="0" id="qtd_menor">
+                </div>
+                <!-- Parentesco -->
+                <div id="label_parentesco" class="form-group" hidden="hidden">
+                    <label class="col-md-4 control-label" for="grauparentesco">Você é:</label>
+                    <div class="col-md-4">
+                        <input id="grauparentesco" name="parentesco" type="text" placeholder="pai/mãe"
+                               class="form-control input-md" required="required">
+                    </div>
+                </div>
+
+                <br/><input id="gravaMenor" type="hidden" class="btn btn-primary" value="Gravar"/>
+            </form>
+            <hr/>
+            <div id="dep"></div>
+        </div>
+        <div id="altSenha" style="margin-top: 16px;margin-bottom: 46px;">
+            <h4>Alterar Senha</h4>
+            <hr/>
+            <form id="upSenha" action="#" method="POST">
+                <div class="form-group col-md-8 col-lg-push-2">
+                    <label class="control-label" for="senha">Nova Senha</label>
+                    <div class="">
+                        <input id="senha" name="senha" type="password" placeholder="senha" class="form-control input-md"
+                               required="">
+                    </div>
+                </div>
+                <div class="form-group col-md-8 col-lg-push-2">
+                    <label class="control-label" for="repsenha">Repita a nova Senha</label>
+                    <div class="">
+                        <input id="repsenha" name="senha" onkeyup="verificaSenha();" type="password" placeholder="senha"
+                               class="form-control input-md"
+                               required="">
+                    </div>
+                    <p class="help-block" id="error-senha"></p>
+                </div>
+                <div class="form-group col-md-8 col-lg-push-2">
+                    <input id="btn-senha" type="button" onclick="verificaUpdateSenha();"
+                           class="btn btn-primary form-control input-md" value="Alterar">
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#tbody').on("load", loader());
+    var identificador;
+    function loader() {
+        identificador = parseInt(getParameterByName('id'));
+        getMsgs();
+        ajaxLoadGET('control/main.php?req=selectPessoaById&id=' + identificador, jsonParseInfoPessoa, '#toficinas');
+        $('#upSenha').attr('action','control/main.php?req=updateSenha&id=' + identificador);
+    }
+    /*---ESSAs ESTão DUPLICADAs PROPROSITALMENTE PARA ALTERAR ALGUNS VALORES NA EXIBIÇÃO---------*/
+    function editUsuarioNome() {
+        $('#btNome').removeAttr("onclick");
+        let dadosBasicos = $('#nomeNasc');
+        let sobrenome = $('#sobrenome').text();
+        let nasc = usuarioJson[0].data_nascimento//$('#nasc').text();
+        dadosBasicos.empty();
+        dadosBasicos.append(
+            '<form action="control/main.php?req=updateDadosBasicos&id=' + identificador + '" method="POST">' +
+            '<p>Nome: <input type=\'text\' name=\'nome\' value="' + nome + '" required="required"></p>' +
+            '<p>Sobrenome: <input type="text" name="sobrenome" value="' + sobrenome + '" required="required"></p>' +
+            '<p>Data nascimento: <input type="date" name="nascimento" value="' + nasc + '" required="required"> </p>' +
+            '<br/><input type="submit" class="btn btn-primary" value="Gravar"/>' +
+            '</form>');
+    }
+    function editaRuralino() {
+        let curso = $('#curso').text();
+        let matricula = $('#matricula').text();
+        let conteudo = $('#ruralinoConteudo');
+        conteudo.empty();
+        conteudo.append(
+            '<form action="control/main.php?req=updateRuralino&id=' + identificador + '" method="POST">' +
+            '<p>Curso: <input type="text" name="curso" value="' + curso + '" required="required"></p>' +
+            '<p>Matricula: <input type="number" name="matricula" value="' + matricula + '" ></p>'+
+            '<br/><input type="submit" class="btn btn-primary" value="Gravar"/>' +
+            '</form>'
+        );
+    }
+</script>
+
+</body>

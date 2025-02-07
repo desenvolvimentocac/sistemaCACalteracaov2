@@ -1,0 +1,73 @@
+<body class="container-fluid">
+<div class=" infra">
+    <div class="header">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid" style="overflow-x: hidden">
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="index.php?pag=Infraestrutura"><i class="glyphicon glyphicon-chevron-left"></i> Voltar a Gerência de Infraestrutura</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="container" style="overflow-x: hidden">
+        <form id="editPredio" class="form-horizontal" action="" method="POST">
+            <div id="carregador"></div>
+            <div class="form-group">
+                <h2 class="" style="">Edição de Prédios - <span id="nomeHeader"></span></h2>
+                <br><br>
+                <label class="control-label" for="nome">Nome</label>
+                <div class="">
+                    <input id="nome" name="nome" type="text" placeholder=""  class="form-control input-md" required autocomplete="off">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label" for="localizacao">LOCALIZAÇÃO</label>
+                <div class="">
+                    <input id="localizacao" name="localizacao" type="text" placeholder=""  class="form-control input-md" required autocomplete="off">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label" >ESTADO DE ATIVIDADE</label>
+                <div class="">
+                    <label class="radio-inline">
+                        <input type="radio" name="ativo" value="1">Ativo
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="ativo" value="0">Inativo
+                    </label>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="form-group"><!-- Submit -->
+                <input id="enviar" type="submit" class="btn btn-primary btn-block" value="Atualizar" />
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+
+    var controlador = 'control/main.php?req=selectPredioById&id='+getParameterByName('id');
+
+    $('#tbody').on("load", loader());
+
+    function loader() {
+        getMsgs();
+        ajaxLoadGET(controlador,jsonParseEditPredio,'#carregador');
+        $('#editPredio').attr('action', 'control/main.php?req=updatePredio&id='+getParameterByName('id'));
+    }
+
+    function jsonParseEditPredio(resposta,corpo) {
+            var jsonObj = JSON.parse(resposta);
+            $('#nome').val(jsonObj[0].nome);
+            $('#nomeHeader').append(jsonObj[0].nome);
+            $('#localizacao').val(jsonObj[0].localizacao);
+    }
+
+
+</script>
+</body>

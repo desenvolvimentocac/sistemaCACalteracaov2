@@ -1,0 +1,223 @@
+<body class="container-fluid turmas">
+
+<div class="header">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand" href="index.php?pag=Turmas" style="color: #FFF"><i class="glyphicon glyphicon-chevron-left"></i>
+                    Voltar para Gerência de Turmas</a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+
+<div class="container">
+    <p id="avisos"></p>
+    <!-- Form Name  -->
+    <form class="form-horizontal" id="formEditTurma" action=" " method="POST">
+        <br>
+        <div class="formBoxContainer col-md-12">
+            <div class="form-group container">
+                <h3 class="text-center col-md-12">Edição de Turma - <span id="nomeHeader"></span></h3>
+                <h4 class="text-center col-md-12"> - <span id="turmaName"></span> - </h4>
+                <div class="col-md-12">
+                    <label class="control-label">ESTADO DE ATIVIDADE</label>
+                    <div class="">
+                        <label class="radio-inline">
+                            <input type="radio" name="rb" value="1" > Ativo
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="rb" value="0"> Inativo
+                        </label>
+                    </div>
+                    <br><br>
+                </div>
+                <div class="col-md-12">
+                    <select class="selectCool2" id="selectProf" name="prof_id" style="color: black"
+                            title="---" required="required">
+                        <option value="">---</option>
+                    </select>
+                </div>
+                <!-- Infraestrutura -->
+                <div class="">
+                    <div class="col-md-12">
+                        <select class="selectCool2" id="selectPredio" onchange="SalaFromPredioId();"
+                                title="---"
+                                required="required">
+                            <option value="" selected disabled>---</option>
+                        </select>
+                    </div>
+                    <div id="carregandoSalas"></div>
+                    <div class="col-md-12">
+                        <select class="selectCool2" id="selectSala" name="sala_id" onchange="disponibilidade();"
+                                title="---"
+                                required="required">
+                            <option value="" selected disabled>---</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="col-md-4" style="margin-top: 16px">
+                    <input id="vagas" name="vagas" type="number" placeholder="Número de vagas"
+                           class="form-control input-md"
+                           required="" min="1">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="formBoxContainer col-md-12">
+            <h3 class="text-center col-md-12">Cronograma</h3>
+
+            <div class="form-group">
+                <div class="text-center">
+
+                <span class="button-checkbox">
+                    <button id="seg" type="button" class="btn btn-primary"><i
+                            class="state-icon glyphicon glyphicon-unchecked"></i>&nbsp;Segunda</button>
+                    <input type="checkbox" name="seg" class="hidden"/>
+                </span>
+
+                    <span class="button-checkbox">
+                    <button id="ter" type="button" class="btn btn-primary"><i
+                            class="state-icon glyphicon glyphicon-unchecked"></i>&nbspTerça</button>
+                    <input type="checkbox" name="ter" class="hidden"/>
+                </span>
+
+                    <span class="button-checkbox">
+                    <button id="qua" type="button" class="btn btn-primary"><i
+                            class="state-icon glyphicon glyphicon-unchecked"></i>&nbsp;Quarta</button>
+                    <input type="checkbox" name="qua" class="hidden"/>
+                </span>
+
+                    <span class="button-checkbox">
+                    <button id="qui" type="button" class="btn btn-primary"><i
+                            class="state-icon glyphicon glyphicon-unchecked"></i>&nbsp;Quinta</button>
+                    <input type="checkbox" name="qui" class="hidden"/>
+                </span>
+
+                    <span class="button-checkbox">
+                    <!--button id="sex" type="button" class="btn" data-color="primary">Sexta</button-->
+                        <button id="sex" type="button" class="btn btn-primary"><i
+                                class="state-icon glyphicon glyphicon-unchecked"></i>&nbsp;Sexta</button>
+                    <input type="checkbox" name="sex" class="hidden"/>
+                </span>
+                    <br>
+                    <br>
+                </div>
+                <h3 class="text-center col-md-12">Horários ocupados</h3>
+                <!--Uma Tabela de Horário, shhhh, não conta pra ninguém-->
+                <div class="container-fluid">
+                    <div class="timetable"></div>
+                </div>
+            </div>
+        </div>
+        <div class="formBoxContainer col-md-12">
+            <h3 class="text-center col-md-12">Escolha de Horário</h3>
+
+            <div class="form-group col-md-9 col-md-push-4">
+                <div class=" col-md-3">
+                    <label class="control-label" for="horarioInic">Inicia as: </label>
+                    <div class="">
+                        <input id="horarioInic" name="horario_inic" type="time" placeholder=""
+                               class="form-control input-md" required="">
+                    </div>
+                </div>
+                <div class=" col-md-3">
+                    <label class="control-label" for="horarioFim">Termina as: </label>
+                    <div class="">
+                        <input id="horarioFim" name="horario_fim" type="time" placeholder="Início (--:--)"
+                               class="form-control input-md" required="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Submit -->
+        <div class="container-fluid">
+            <input id="enviar" type="submit" class="btn btn-primary btn-block" value="Atualizar"/>
+        </div>
+        <br>
+        <br>
+    </form>
+</div>
+
+
+<script>
+    //carregando as opcoes de troca
+    let selectPredioTurma = $('#selectPredio');
+    let selectSalaTurma = $('#selectSala');
+    let selectOficinaTurma = $('#selectOficina');
+    let selectProfTurma = $('#selectProf');
+    let horariosTurma = $('#horariosDisponiveis');
+    $(document).on("load", carregadorCadTurmas());
+
+    //carregando as opcoes atuais
+    var oficinaAtual = 0;
+    var salaAtual = 0;
+    var predioAtual = 0;
+    var professorAtual = 0;
+    $(document).ready(carregador());
+
+    function carregador() {
+        getMsgs();
+        //setando ação de atualizar
+        $('#formEditTurma').attr('action', 'control/main.php?req=updateTurma&id=' + getParameterByName('id'));
+        //obtendo Informações da oficina selecionada
+        ajaxLoadGET('control/main.php?req=selectTurmaById&id=' + getParameterByName('id'), jsonParseSelectedOficina, '#teste');
+
+        function jsonParseSelectedOficina(resposta, corpo) {
+            const json = JSON.parse(resposta);
+
+            horaSanitize = json[0].inicio.split(":");
+            $('#horarioInic').val(horaSanitize[0]+":"+horaSanitize[1]);
+
+            horaSanitize = json[0].fim.split(":");
+            $('#horarioFim').val(horaSanitize[0]+":"+horaSanitize[1]);
+
+
+            $('#vagas').val(json[0].num_vagas);
+            oficinaAtual = json[0].oficina_id;
+            salaAtual = json[0].sala_id;
+            predioAtual = json[0].predio_id;
+            professorAtual = json[0].professor;
+
+            //console.log(json);
+
+            input = "input[name=rb][value="+json[0].is_ativo+"]";
+
+            $(input).prop("checked",true);
+
+            //selecionando os dias da semana
+            if (json[0].segunda === "1") $('#seg').click();
+            if (json[0].terca === "1") $('#ter').click();
+            if (json[0].quarta === "1") $('#qua').click();
+            if (json[0].quinta === "1") $('#qui').click();
+            if (json[0].sexta === "1") $('#sex').click();
+            //oficina
+            $('#nomeHeader').append(json[0].oficina);
+            $('#turmaName').append(json[0].nome_turma);
+
+            //Setando os selects na posicao correta dos dados
+            $('#selectPredio option[value=' + predioAtual + ']').attr('selected', 'selected');
+            $('#selectOficina option[value=' + oficinaAtual + ']').attr('selected', 'selected');
+            SalaFromPredioId();
+            setTimeout(() => {
+                $('#selectSala option[value=' + salaAtual + ']').attr('selected', 'selected');
+                disponibilidade();
+            }, 200);
+            setTimeout(() => $('#selectProf option[value=' + professorAtual + ']').attr('selected', 'selected'), 400);
+
+        }
+    }
+
+</script>
+<script src="js/checkboxButton.js"></script>
+</body>

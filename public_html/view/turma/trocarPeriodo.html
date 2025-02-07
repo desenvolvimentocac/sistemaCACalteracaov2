@@ -1,0 +1,88 @@
+<body class="turmas container-fluid">
+<div class="header">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a class="navbar-brand" href="?pag=DashBoard" style="color: white"><i class="glyphicon glyphicon-chevron-left"></i> Página Inicial</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li class="active" data-toggle="collapse" data-target="#myNavbar"><a data-toggle="tab" href="#periodo">Mudando Periodo</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<p id="avisos"></p>
+
+<div class="container">
+    <div class="col-md-12">
+        <h4 class="text-left col-md-12 alert alert-warning"><span class="glyphicon glyphicon-warning-sign"
+                                                                  style="float: left;"></span><span
+                class="col-md-8"><b>ATENÇÃO! SÓ É POSSÍVEL AVANÇAR OS PERÍODOS </b><br><br>
+            Ao avançar o período, TODAS as turmas atuais irão para o histórico.
+        </span></h4>
+    </div>
+    <div class="formBoxContainer col-md-12">
+        <h3 class="text-center col-md-12">Você Está Em <span id="anoAtual"></span>.<span id="periodoAtual"></span>
+        </h3>
+        <h4 class="text-center">Estamos Indo Para Qual Período? </h4>
+        <br>
+
+        <p class="text-center">
+            <a href="" id="op1" class="btn btn-primary"></a>
+            <a href="#" id="op2" class="btn btn-primary"></a>
+        </p>
+        <br>
+
+         <!--TODO: Confirmação - Para o Klinger-->
+        <!--h3 class="text-center">Confirmar Período de Destino ?</h3>
+        <form action="" class="col-md-4 col-lg-push-4">
+            <div class="text-center">
+                <input class="form-control" type="text" placeholder="Escreva CERTEZA " />
+                <br>
+                <button class="btn btn-primary col-md-12" type="submit">Confirmar</button>
+                <br>
+                <br>
+                <br>
+            </div>
+        </form>
+
+    </div-->
+</div>
+
+<script type="text/javascript">
+
+    $(document).on("load", loader());
+
+
+    function loader() {
+        ajaxLoadGET('control/main.php?req=selectPeriodoAtual', parsePeriodoButton, '#periodoAtual');
+        getMsgs();
+    }
+
+    function parsePeriodoButton(resposta, corpo) {
+        let json = JSON.parse(resposta);
+        $('#anoAtual').append(json.ano);
+        corpo.append(json.periodo);
+
+        let ano = parseInt(json.ano);
+        let periodo = parseInt(json.periodo);
+        let op1 = $('#op1');
+        op1.append(ano + ' - ' + (periodo + 1));
+        op1.attr('href', 'control/main.php?req=setPeriodo&ano=' + ano + '&periodo=' + (periodo + 1));
+
+        let op2 = $('#op2');
+        op2.append((ano + 1) + ' - 1');
+        op2.attr('href', 'control/main.php?req=setPeriodo&ano=' + (ano + 1) + '&periodo=1');
+    }
+</script>
+</body>
