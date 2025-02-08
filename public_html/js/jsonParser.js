@@ -409,6 +409,7 @@ function parseTurmasAtivas(resposta, corpo) {
     obterAlunos();
 }
 
+
 function obterAlunos() {
     let turma = $('#turma').val();
     if (turma != null) $('#gerarPresenca').attr('href', 'control/main.php?req=listaPresenca&id=' + turma);

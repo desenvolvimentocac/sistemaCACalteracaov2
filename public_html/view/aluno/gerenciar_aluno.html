@@ -32,9 +32,11 @@
             <a href="?pag=Cad.Aluno" type="button" class="btn btn-primary"><i
                     class="glyphicon glyphicon-plus"></i>Inserir Aluno em Turma</a>
 
-            <select class="selectCool2" onchange="obterAlunos();" id="turma">
-                <option value="1" selected="selected">T01</option>
-            </select>
+<select class="selectCool2" onchange="obterAlunos();" id="turma">
+
+</select>
+
+			
             <a id="gerarPresenca" href="" class="btn btn-primary">Gerar Lista de presença</a>
             <h3 class="text-center">Alunos Matriculados na turma</h3>
 
@@ -87,19 +89,70 @@
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
     $(document).on("load", loader());
 
-    function loader() {
-        ajaxLoadGET('control/main.php?req=selectTurmaAtiva', parseTurmasAtivas, '#turma');
-        getMsgs();
-    }
+function loader() {
+    $.ajax({
+        url: 'control/main.php?req=getTodasTurmas',
+        type: 'GET',
+        data: {
+            req: 'getTodasTurmas'
+        },
+        success: function(response) {
+            // Add debug logging
+            console.log('Raw response:', response);
+            
+            try {
+                const turmas = JSON.parse(response);
+                
+                // Check if we got an error message
+                if (turmas.error) {
+                    console.error('Server error:', turmas.error);
+                    alert('Erro ao carregar as turmas: ' + turmas.error);
+                    return;
+                }
+                
+                const turmaSelect = $('#turma');
+                turmaSelect.empty();
+                
+                // Add a default option
+                turmaSelect.append(new Option('Selecione uma turma', ''));
+                
+                // Check if we have any turmas
+                if (turmas.length === 0) {
+                    console.log('No turmas found');
+                    turmaSelect.append(new Option('Nenhuma turma encontrada', ''));
+                    return;
+                }
+                
+                // Add options with period information
+                turmas.forEach(function(turma) {
+                    const optionText = `${turma.nome} - ${turma.oficina} (${turma.professor}/${turma.criacao_turma})`;
+                    turmaSelect.append(new Option(optionText, turma.id_turma));
+                });
+            } catch (e) {
+                console.error('JSON parse error:', e);
+                console.error('Response that failed to parse:', response);
+                alert('Erro ao processar dados das turmas');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            console.error('Response:', xhr.responseText);
+            alert("Erro ao carregar as turmas. Verifique o console para mais detalhes.");
+        }
+    });
+}
 
-    function confirmacaoTrancarMatricula(id) {
+	
+	    function confirmacaoTrancarMatricula(id) {
         let resposta = confirm("Deseja trancar a matricula?");
         if(resposta == true){
             window.location.href = "control/main.php?req=trancarMatricula&id="+id;
         }
     }
 </script>
+
 </body>

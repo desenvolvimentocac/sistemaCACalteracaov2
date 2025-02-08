@@ -252,17 +252,46 @@ class turma{
      * @throws Exception
      */
     public function getTurmas($tempoId){
-        //aqui mostramos todas as turmas ativas ou nao
-        $projection = "turma.is_ativo,oficina.nome as oficina,segunda,terca,quarta,quinta,sexta,TIME_FORMAT(inicio, '%H:%ih') AS inicio,TIME_FORMAT(fim, '%H:%ih') AS fim,sala.nome as sala,pessoa.nome as professor,turma.num_vagas as vagas,turma.id_turma,turma.nome_turma as turma";
-        $table ="oficina,horario_turma_sala,sala,pessoa,turma";
-
-        if($_SESSION['NIVEL'] == ADMINISTRADOR){
-            $whereClause = "turma.oficina_id = oficina.id_oficina and turma.professor = pessoa.id_pessoa and turma.id_turma = horario_turma_sala.turma_id AND horario_turma_sala.sala_id = sala.id_sala AND turma.tempo_id = ?";
-        }else{
-            $whereClause = "turma.oficina_id = oficina.id_oficina and turma.professor = pessoa.id_pessoa and turma.id_turma = horario_turma_sala.turma_id AND horario_turma_sala.sala_id = sala.id_sala AND turma.tempo_id = ? and turma.professor = ".$_SESSION['ID'];
+        $projection = "id_turma, criacao_turma, oficina.nome as oficina, num_vagas, nome_turma, pessoa.nome as professor, sala.nome as sala, segunda, terca, quarta, quinta, sexta, TIME_FORMAT(inicio, '%H:%i') AS inicio, TIME_FORMAT(fim, '%H:%i') AS fim";
+        
+        $table = "(pessoa, oficina, turma, sala)";
+        $joinClause = " LEFT JOIN horario_turma_sala ON id_turma = turma_id";
+        
+        $whereClause = "professor = id_pessoa AND id_oficina = oficina_id AND sala_id = id_sala AND turma.tempo_id = ?";
+        
+        $whereArgs = array($tempoId);
+        
+        try {
+            return $this->db->select($projection, $table . $joinClause, $whereClause, $whereArgs, "oficina.nome ASC, nome_turma ASC");
+        } catch (Exception $e) {
+            new mensagem(ERRO, "Erro ao recuperar as turmas: " . $e->getMessage());
+            return json_encode([]);
         }
-        return $this->db->select($projection,$table, $whereClause,array($tempoId),"oficina.nome",ASC);
     }
+	
+public function getTodasTurmas() {
+    $projection = 
+        "turma.id_turma, 
+         turma.nome_turma as nome, 
+         oficina.nome as oficina, 
+         pessoa.nome as professor,
+         turma.criacao_turma";
+        
+    $table = "turma";
+    $joins = " INNER JOIN oficina ON turma.oficina_id = oficina.id_oficina" .
+            " INNER JOIN pessoa ON turma.professor = pessoa.id_pessoa";
+
+    $whereClause = "turma.is_ativo = ?";
+    $whereArgs = array(SIM);
+
+    try {
+        return $this->db->select($projection, $table . $joins, $whereClause, $whereArgs);
+    } catch (Exception $e) {
+        error_log("Erro em getTodasTurmas: " . $e->getMessage());
+        return json_encode(array());
+    }
+}
+
 
     /**
      * Aqui recuperamos as turmas alocadas em Determinada Sala

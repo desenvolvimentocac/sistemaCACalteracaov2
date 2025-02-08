@@ -1,0 +1,2 @@
+Mudar novamente os parametros do arquivo database.ini quando for subir, ou pegar o original
+tirar os headers CORs dos arquivos em que eu o coloquei

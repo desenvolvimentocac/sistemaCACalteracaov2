@@ -5,6 +5,12 @@
  * Time: 11:46
  * Sistema de Rotas para o controler
  */
+ 
+ header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+
 include_once 'constantes.php';
 include_once 'login.php';
 include_once 'infraestrutura.php';
@@ -202,9 +208,24 @@ class main{
                 $turma->setTurma();
                 break;
             case "selectTurma":
+			    header("Content-Type: application/json; charset=UTF-8");
                 $turma = new turma();
                 echo $turma->getTurmas($_GET['id']);
                 break;
+case 'getTodasTurmas':
+    try {
+        $turma = new turma();
+        $result = $turma->getTodasTurmas();
+        if ($result === false || $result === '') {
+            echo json_encode(['error' => 'No data found']);
+        } else {
+            echo $result;
+        }
+    } catch (Exception $e) {
+        echo json_encode(['error' => $e->getMessage()]);
+    }
+    break;
+                break;			
             case "updateTurma":
                 $turma = new turma();
                 $turma->updateTurma($_GET['id']);
