@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação de Oficinas</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<link rel="stylesheet" href="../../css/cssPersonalizado.css">
+	<link rel="stylesheet" href="../../css/bootstrapExpansion.css">
+	<link rel="stylesheet" href="../../bootstrap3.3.7/css/bootstrap.css">
+	<link rel="icon" type="image/png" href="../../img/favicon.png">
+
+</head>
+<body class="container-fluid oficinas">
+    <h1>Avaliação de Oficinas</h1>
+    
+    <label for="turma">Selecione a turma:</label>
+    <select class="selectCool2" id="turma" name="turma">
+        <option value="">Selecione uma turma</option>
+    </select>
+    
+    <label for="nota">Nota:</label>
+    <select class="selectCool2" id="nota" name="nota">
+        <option value="">Selecione</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+    </select>
+	<br></br>
+    
+    <label for="comentario">Comentário:</label>
+	<br></br>
+    <textarea id="comentario" rows="10" cols="50" name="comentario"></textarea>
+	<br></br>
+    <button class="btn-success" id="enviar">Enviar Avaliação</button>
+	<button class="btn-primary" id="voltar">Voltar a Tela Principal</button>
+    
+    <script>
+        $(document).ready(function() {
+            let userId = null;
+
+            // Primeiro, obter o usuário logado
+            function getUsuarioLogado() {
+                $.ajax({
+                    url: '../../control/main.php?req=selecUsuarioLogado',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log('Usuário logado:', response);
+                        if (response && response.id_pessoa) {
+                            userId = response.id_pessoa;
+                            carregarTurmas(userId);
+                        } else {
+                            console.error('Usuário não autenticado');
+                            alert('Erro: Usuário não autenticado');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Erro ao obter usuário:', error);
+                        alert('Erro ao verificar usuário. Tente novamente.');
+                    }
+                });
+            }
+
+            function carregarTurmas(id) {
+                $.ajax({
+                    url: '../../control/main.php?req=getOficinasAluno',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { req: 'getOficinasAluno', id_pessoa: id },
+
+                    success: function(response) {
+                        console.log('Oficinas recebidas:', response);
+
+                        let turmaSelect = $('#turma');
+                        turmaSelect.empty();
+                        turmaSelect.append(new Option('Selecione uma turma', ''));
+
+                        if (response.error) {
+                            alert('Erro ao carregar as oficinas: ' + response.error);
+                            return;
+                        }
+
+                        if (response.length === 0) {
+                            turmaSelect.append(new Option('Nenhuma oficina encontrada', ''));
+                        } else {
+                            response.forEach(oficina => {
+                                turmaSelect.append(new Option(oficina.nome_oficina, oficina.id_oficina));
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Erro ao carregar turmas:', error);
+                        alert('Erro ao carregar as turmas. Tente novamente.');
+                    }
+                });
+            }
+
+            // Iniciar o processo chamando getUsuarioLogado
+            getUsuarioLogado();
+
+$('#enviar').click(function() {
+    let id_oficina = $('#turma').val();
+    let nota = $('#nota').val();
+    let comentario = $('#comentario').val();
+
+    if (!id_oficina || !nota) {
+        alert('Por favor, selecione uma turma e uma nota.');
+        return;
+    }
+
+    $.ajax({
+        url: '../../control/main.php?req=avaliarOficina',
+        type: 'POST',
+        dataType: 'json',
+        data: { 
+            req: 'avaliarOficina', 
+            id_oficina, 
+            nota, 
+            comentario,
+            id_pessoa: userId 
+        },
+        success: function(response) {
+            if (response.error) {
+			console.error('Erro na avaliação:', response.error);
+                alert('Erro: ' + response.error);
+            } else {
+                alert('Avaliação enviada com sucesso!');
+                $('#turma').val('');
+                $('#nota').val('');
+                $('#comentario').val('');
+            }
+        },
+        error: function(xhr) {
+            alert('Erro ao enviar avaliação: ' + xhr.responseText);
+        }
+    });
+});
+
+        });
+		
+$('#voltar').click(function() {
+    window.location.href = '../../index.php?pag=DashBoard';
+});
+
+    </script>
+</body>
+</html>
