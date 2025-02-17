@@ -33,7 +33,7 @@ class pessoa{
 //------------Recebe Dados do Form -------------------------------------------------------------------------------------
 
     private function receiveAccessLevel(){
-        if (isset($_SESSION['NIVEL']) and $_SESSION['NIVEL'] == ADMINISTRADOR) {//se não for adm o nivel é automaticamente aluno
+        if (isset($_SESSION['NIVEL']) and $_SESSION['NIVEL'] == ADMINISTRADOR || $_SESSION['NIVEL'] == COORDENADOR) {//se não for adm o nivel é automaticamente aluno
             $this->nv = isset($_POST['nv_acesso']) ? $_POST['nv_acesso'] : ALUNO;//se der erro fica como visitante
         } else {
             $this->nv = ALUNO;
@@ -219,10 +219,22 @@ class pessoa{
     /**
      * @throws Exception
      */
-    private function insertDocumento(){
-        $params = array($this->responsavelID,$this->docNumber,$this->docType);
-        $this->db->insert("pessoa_id,numero_documento,tipo_documento","documento",$params);
+private function insertDocumento() {
+    // Verificar se o documento já existe
+    $exists = $this->db->select(
+        "SELECT pessoa_id FROM documento WHERE numero_documento = ? AND tipo_documento = ?", 
+        array($this->docNumber, $this->docType)
+    );
+    
+    if ($exists) {
+        new mensagem(INSERT_ERRO, "Este documento já está cadastrado no sistema");
+        return false;
     }
+    
+    $params = array($this->responsavelID, $this->docNumber, $this->docType);
+    return $this->db->insert("pessoa_id,numero_documento,tipo_documento", "documento", $params);
+}
+
 	/**
      * @throws Exception
      */
@@ -288,7 +300,7 @@ class pessoa{
         //ou pessoa id = dependente id da pessoa
         $dependentes = json_decode($this->getDependentes($_SESSION['ID']));
 
-        if($pessoaId == $_SESSION['ID'] or $_SESSION['NIVEL'] == ADMINISTRADOR){
+        if($pessoaId == $_SESSION['ID'] or $_SESSION['NIVEL'] == ADMINISTRADOR || $_SESSION['NIVEL'] == COORDENADOR){
             return true;
         }else{
             //verificando dependentes
@@ -302,7 +314,7 @@ class pessoa{
     }
 
     public function hasSelectPermission(){
-        if(isset($_SESSION['NIVEL']) and $_SESSION['NIVEL'] == ADMINISTRADOR) return;
+        if(isset($_SESSION['NIVEL']) and $_SESSION['NIVEL'] == ADMINISTRADOR || $_SESSION['NIVEL'] == COORDENADOR) return;
         else $this->redireciona();
     }
 
@@ -325,6 +337,9 @@ class pessoa{
                 break;
             case 'administrador':
                 $pageNumber = $this->db->select("count(*) as total","pessoa","nv_acesso = ?",array(1),"nome",ASC);
+                break;
+			case 'coordenador':
+                $pageNumber = $this->db->select("count(*) as total","pessoa","nv_acesso = ?",array(5),"nome",ASC);
                 break;
         }
         return $pageNumber;
@@ -375,7 +390,7 @@ class pessoa{
                 $jsonUser = $this->db->select($projecao,"pessoa","nv_acesso >= ? and nome like ? and sobrenome like ?",array(3,$primeiroNome,$ultimoNome),"nome",ASC,REGISTROS,$base);
                 break;
             case 'professor':
-                if($_SESSION['NIVEL'] == ADMINISTRADOR){
+                if($_SESSION['NIVEL'] == ADMINISTRADOR || $_SESSION['NIVEL'] == COORDENADOR){
                     //Obtemos todos os professores com left Join em Maior idade
                     $jsonUser = $this->db->select($projecao,"pessoa","nv_acesso <= ? and nome like ? and sobrenome like ?",array(2,$primeiroNome,$ultimoNome),"nome",ASC);
 
@@ -384,9 +399,13 @@ class pessoa{
                 }
                 break;
             case 'administrador':
-                if($_SESSION['NIVEL'] == ADMINISTRADOR)
+                if($_SESSION['NIVEL'] == ADMINISTRADOR || $_SESSION['NIVEL'] == COORDENADOR)
                 $jsonUser = $this->db->select($projecao, "pessoa", "nv_acesso = ?", array(1));
                 break;
+			case 'coordenador':
+                if($_SESSION['NIVEL'] == COORDENADOR)
+                $jsonUser = $this->db->select($projecao, "pessoa", "nv_acesso = ?", array(5));
+                break;	
         }
 
         return $jsonUser;
@@ -511,7 +530,7 @@ class pessoa{
         if($this->hasPermission($pessoaId) == false)return;
         $this->receiveDadosBasicos();
 
-        if($_SESSION['NIVEL'] == ADMINISTRADOR){
+        if($_SESSION['NIVEL'] == ADMINISTRADOR || $_SESSION['NIVEL'] == COORDENADOR){
             $colunms = array("nome","sobrenome","nv_acesso","data_nascimento");
             $params =array($this->nome,$this->sobrenome,$this->nv,$this->nascimento);
         }else{//se nao for adm não mexemos no nivel de acesso
@@ -587,19 +606,51 @@ class pessoa{
      * @param $pessoaId
      * @throws Exception
      */
-    public function updateDocument($pessoaId){
-        $this->receiveDocumento();
-        if($this->hasPermission($pessoaId) == false)return;
-        $columns = array("numero_documento","tipo_documento");
-        $params = array($this->docNumber,$this->docType);
-
-        if($this->db->update($columns,"documento",$params,"pessoa_id = ?",array($pessoaId))){
-            new mensagem(SUCESSO,"Documento atualizado");
-        }else{
-            new mensagem(INSERT_ERRO,"Não foi possivel atualizar");
-        }
+public function updateDocument($pessoaId) {
+    $this->receiveDocumento();
+    if ($this->hasPermission($pessoaId) == false) return;
+    
+    // Verificar se o novo documento já existe para outra pessoa
+    $exists = $this->db->select(
+        "SELECT pessoa_id FROM documento 
+         WHERE numero_documento = ? 
+         AND tipo_documento = ? 
+         AND pessoa_id != ?", 
+        array($this->docNumber, $this->docType, $pessoaId)
+    );
+    
+    if ($exists) {
+        new mensagem(INSERT_ERRO, "Este documento já está cadastrado para outra pessoa");
         $this->redirecionaPagAnterior();
+        return;
     }
+    
+    $columns = array("numero_documento", "tipo_documento");
+    $params = array($this->docNumber, $this->docType);
+    
+    if ($this->db->update($columns, "documento", $params, "pessoa_id = ?", array($pessoaId))) {
+        new mensagem(SUCESSO, "Documento atualizado");
+    } else {
+        new mensagem(INSERT_ERRO, "Não foi possivel atualizar");
+    }
+    $this->redirecionaPagAnterior();
+}
+
+
+
+
+
+public function verificaDocumento() {
+    $numero = $_POST['numero_documento'];
+    $tipo = $_POST['tipo_documento'];
+    
+    $exists = $this->db->select(
+        "SELECT pessoa_id FROM documento WHERE numero_documento = ? AND tipo_documento = ?",
+        array($numero, $tipo)
+    );
+    
+    echo json_encode(array('exists' => !empty($exists)));
+}
 
     /**
      * Atualiza a informação de quem foi cadastrado como não ruralino
@@ -628,7 +679,7 @@ class pessoa{
     public function updateRuralino($pessoaId){
         if($this->hasPermission($pessoaId)){
             $this->receiveRuralino();
-            if($_SESSION['NIVEL'] == ADMINISTRADOR){
+            if($_SESSION['NIVEL'] == ADMINISTRADOR || $_SESSION['NIVEL'] == COORDENADOR){
                 $columns = array("matricula","curso","bolsista");
                 $params = array($this->matricula,$this->curso,$this->bolsista);
             }else{//se não for ADM não pode alterar status de bolsista
