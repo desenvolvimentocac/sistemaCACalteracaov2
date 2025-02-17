@@ -254,10 +254,15 @@ function getNVacesso(nv) {
             return CargoProf;
         case '3':
             return CargoAluno;
+        case '4':
+            return "Visitante";
+		case '5':
+            return CargoCoordenador;
         default:
             return "Visitante";
     }
 }
+
 function getMsgs() {
     let aviso = $('#avisos');
     let msg = JSON.parse(mensagem);
@@ -753,8 +758,9 @@ function loadDocument() {
     }
 
     function documenTipo(num) {
-        if (num === "1") return "Registro Geral (RG)";
-        return "Passaporte";
+		if (num === "2") return "Passaporte";
+        if (num === "3") return "CPF";
+        return "Registro Geral (RG)";
     }
 }
 
@@ -829,6 +835,7 @@ function editUsuarioNome() {
     // noinspection BadExpressionStatementJS
     dadosBasicos.append(
         `<form action="control/main.php?req=updateDadosBasicos&id=${identificador}" method="POST"><p>Nível de Acesso: <select id="nv_acesso" name="nv_acesso">
+		                <option value=5>${CargoCoordenador} </option>
                         <option value=4>Visitante</option>
                         <option value=3>${CargoAluno} </option>
                          <option value=2>${CargoProf} </option>
@@ -903,7 +910,7 @@ function editUsuarioDocumento() {
         '<form action="control/main.php?req=updateDoc&id=' + identificador + '" method="POST">' +
         '<p>Tipo: ' +
         '   <select id="doc_type" name="doc_type">\n' +
-        '       <option value="1">Registro geral (RG)</option>\n' +
+        '       <option value="3">CPF</option>\n' +
         '       <option value="2">Passaporte</option>\n' +
         '   </select>' +
         '</p>' +
